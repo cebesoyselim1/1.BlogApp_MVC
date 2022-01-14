@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using BlogApp.Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
@@ -57,6 +58,26 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             builder.HasOne<Role>(u => u.Role).WithMany(r => r.Users).HasForeignKey(u => u.RoleId);
 
             builder.ToTable("Users");
+
+            builder.HasData(
+                new User(){
+                    Id = 1,
+                    RoleId = 1,
+                    FirstName = "Ali",
+                    LastName = "Duman",
+                    UserName = "alidmn",
+                    Email = "alidmn@gmail.com",
+                    PasswordHash = Encoding.ASCII.GetBytes("0192023a7bbd73250516f069df18b500"),
+                    Image = "default.jpg",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedName = "InitialCreate",
+                    ModifiedName = "InitialCreate",
+                    Note = "User",
+                }
+            );
         }
     }
 }

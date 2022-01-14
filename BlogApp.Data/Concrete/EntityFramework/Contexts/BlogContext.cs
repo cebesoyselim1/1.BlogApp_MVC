@@ -16,7 +16,7 @@ namespace BlogApp.Data.Concrete.EntityFramework.Contexts
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){
-            optionsBuilder.UseSqlite(@"Data Source=blog.db");
+            optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=blog.db;Trusted_Connection=True;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

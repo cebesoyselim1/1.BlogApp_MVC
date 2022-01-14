@@ -37,6 +37,45 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             builder.Property(c => c.Note).HasMaxLength(100);
 
             builder.ToTable("Categories");
+
+            builder.HasData(
+                new Category(){
+                    Id = 1,
+                    Name = "C#",
+                    Description = "Everthing about C# programming language",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedName = "InitialCreate",
+                    ModifiedName = "InitialCreate",
+                    Note = "C# Programming Language"
+                },
+                new Category(){
+                    Id = 2,
+                    Name = "C++",
+                    Description = "Everthing about C++ programming language",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedName = "InitialCreate",
+                    ModifiedName = "InitialCreate",
+                    Note = "C++ Programming Language"
+                },
+                new Category(){
+                    Id = 3,
+                    Name = "Javascript",
+                    Description = "Everthing about Javascript programming language",
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                    IsActive = true,
+                    IsDeleted = false,
+                    CreatedName = "InitialCreate",
+                    ModifiedName = "InitialCreate",
+                    Note = "Javascript Programming Language"
+                }
+            );
         }
     }
 }

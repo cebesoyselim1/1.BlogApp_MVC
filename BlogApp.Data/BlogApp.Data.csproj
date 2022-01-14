@@ -10,11 +10,12 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include = "../BlogApp.Shared/BlogApp.Shared.csproj" />
-    <ProjectReference Include = "../BlogApp.Entities/BlogApp.Entities.csproj" />
+    <ProjectReference Include="../BlogApp.Shared/BlogApp.Shared.csproj" />
+    <ProjectReference Include="../BlogApp.Entities/BlogApp.Entities.csproj" />
   </ItemGroup>
 
 </Project>
