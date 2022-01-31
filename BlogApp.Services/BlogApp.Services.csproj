@@ -4,4 +4,14 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../BlogApp.Shared/BlogApp.Shared.csproj" />
+    <ProjectReference Include="../BlogApp.Entities/BlogApp.Entities.csproj" />
+    <ProjectReference Include="../BlogApp.Data/BlogApp.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.0" />
+  </ItemGroup>
+
 </Project>

@@ -16,10 +16,10 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             builder.Property(r => r.Id).ValueGeneratedOnAdd();
 
             builder.Property(r => r.Name).IsRequired();
-            builder.Property(r => r.Name).HasMaxLength(50);
+            builder.Property(r => r.Name).HasMaxLength(100);
 
             builder.Property(r => r.Description).IsRequired();
-            builder.Property(r => r.Description).HasMaxLength(200);
+            builder.Property(r => r.Description).HasMaxLength(500);
 
             builder.Property(r => r.CreatedDate).IsRequired();
 
@@ -35,7 +35,7 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             builder.Property(r => r.ModifiedName).IsRequired();
             builder.Property(r => r.ModifiedName).HasMaxLength(100);
 
-            builder.Property(r => r.Note).HasMaxLength(100);
+            builder.Property(r => r.Note).HasMaxLength(500);
 
             builder.ToTable("Roles");
 

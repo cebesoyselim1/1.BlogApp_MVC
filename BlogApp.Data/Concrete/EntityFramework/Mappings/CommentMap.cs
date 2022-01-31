@@ -16,7 +16,7 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             builder.Property(c => c.Id).ValueGeneratedOnAdd();
 
             builder.Property(c => c.Text).IsRequired();
-            builder.Property(c => c.Text).HasMaxLength(10000);
+            builder.Property(c => c.Text).HasMaxLength(1000);
 
             builder.Property(c => c.CreatedDate).IsRequired();
 
@@ -32,7 +32,7 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             builder.Property(c => c.ModifiedName).IsRequired();
             builder.Property(c => c.ModifiedName).HasMaxLength(100);
 
-            builder.Property(c => c.Note).HasMaxLength(100);
+            builder.Property(c => c.Note).HasMaxLength(500);
 
             builder.HasOne<Article>(c => c.Article).WithMany(a => a.Comments).HasForeignKey(c => c.ArticleId);
 

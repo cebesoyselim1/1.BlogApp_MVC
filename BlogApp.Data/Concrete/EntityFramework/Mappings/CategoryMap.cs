@@ -18,7 +18,7 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             builder.Property(c => c.Name).IsRequired();
             builder.Property(c => c.Name).HasMaxLength(70);
 
-            builder.Property(c => c.Description).HasMaxLength(200);
+            builder.Property(c => c.Description).HasMaxLength(500);
 
             builder.Property(c => c.CreatedDate).IsRequired();
 
@@ -34,7 +34,7 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             builder.Property(c => c.ModifiedName).IsRequired();
             builder.Property(c => c.ModifiedName).HasMaxLength(100);
 
-            builder.Property(c => c.Note).HasMaxLength(100);
+            builder.Property(c => c.Note).HasMaxLength(500);
 
             builder.ToTable("Categories");
 

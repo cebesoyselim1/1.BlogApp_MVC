@@ -75,7 +75,7 @@ namespace BlogApp.Shared.Data.Concrete.EntityFramework
                 }
             }
 
-            return await queryable.SingleOrDefaultAsync();
+            return await queryable.FirstOrDefaultAsync();
         }
 
         public async Task UpdateAsync(TEntity entity)

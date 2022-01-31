@@ -23,7 +23,7 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             builder.Property(u => u.LastName).HasMaxLength(50);
 
             builder.Property(u => u.Email).IsRequired();
-            builder.Property(u => u.Email).HasMaxLength(50);
+            builder.Property(u => u.Email).HasMaxLength(100);
             builder.HasIndex(u => u.Email).IsUnique();
 
             builder.Property(u => u.UserName).IsRequired();
@@ -53,7 +53,7 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             builder.Property(u => u.ModifiedName).IsRequired();
             builder.Property(u => u.ModifiedName).HasMaxLength(100);
 
-            builder.Property(u => u.Note).HasMaxLength(100);
+            builder.Property(u => u.Note).HasMaxLength(500);
 
             builder.HasOne<Role>(u => u.Role).WithMany(r => r.Users).HasForeignKey(u => u.RoleId);
 
