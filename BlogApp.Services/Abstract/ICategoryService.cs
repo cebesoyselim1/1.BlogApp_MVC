@@ -14,8 +14,8 @@ namespace BlogApp.Services.Abstract
         Task<IDataResult<CategoryListDto>> GetAll();
         Task<IDataResult<CategoryListDto>> GetAllNonDeleted();
         Task<IDataResult<CategoryListDto>> GetAllNonDeletedAndActive();
-        Task<IResult> Add(CategoryAddDto c, string createdName);
-        Task<IResult> Update(CategoryUpdateDto c, string modifiedName);
+        Task<IDataResult<CategoryDto>> Add(CategoryAddDto c, string createdName);
+        Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto c, string modifiedName);
         Task<IResult> Delete(int categoryId, string modifiedName);
         Task<IResult> HardDelete(int categoryId);
     }

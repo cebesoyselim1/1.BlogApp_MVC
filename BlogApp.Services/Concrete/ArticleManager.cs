@@ -22,16 +22,16 @@ namespace BlogApp.Services.Concrete
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<IResult> Add(ArticleAddDto articleAddDto, string createdName)
+        public async Task<IDataResult<ArticleDto>> Add(ArticleAddDto articleAddDto, string createdName)
         {
             var article = _mapper.Map<Article>(articleAddDto);
             article.CreatedName = createdName;
             article.ModifiedName = createdName;
 
-            await _unitOfWork.Articles.AddAsync(article);
+            var addingArticle = await _unitOfWork.Articles.AddAsync(article);
             await _unitOfWork.SaveAsync();
 
-            return new Result(ResultStatus.Success,$"{article.Title} has successfully been created.");
+            return new DataResult<ArticleDto>(ResultStatus.Success,$"{article.Title} has successfully been created.",new ArticleDto(){ResultStatus = ResultStatus.Success, Article = addingArticle, Message = $"{article.Title} has successfully been created." });
         }
 
         public async Task<IResult> Delete(int articleId)
@@ -58,7 +58,7 @@ namespace BlogApp.Services.Concrete
                 return new DataResult<ArticleDto>(ResultStatus.Success,$"{article.Title} has successfully been brought.",new ArticleDto(){Article = article,ResultStatus = ResultStatus.Success});
             }
 
-            return new DataResult<ArticleDto>(ResultStatus.Error,"Article not found",new ArticleDto(){Article = null,ResultStatus = ResultStatus.Error});
+            return new DataResult<ArticleDto>(ResultStatus.Error,"Article not found",new ArticleDto(){Article = null,ResultStatus = ResultStatus.Error, Message = "Article not found."});
         }
 
         public async Task<IDataResult<ArticleListDto>> GetAll()
@@ -69,7 +69,7 @@ namespace BlogApp.Services.Concrete
                 return new DataResult<ArticleListDto>(ResultStatus.Success,"Articles has successfully been brought.",new ArticleListDto(){ResultStatus = ResultStatus.Success, Articles = articles});
             }
 
-            return new DataResult<ArticleListDto>(ResultStatus.Error,"Article not found.", new ArticleListDto(){ResultStatus = ResultStatus.Error, Articles = null});
+            return new DataResult<ArticleListDto>(ResultStatus.Error,"Article not found.", new ArticleListDto(){ResultStatus = ResultStatus.Error, Articles = null, Message = "Article not found."});
         }
 
         public async Task<IDataResult<ArticleListDto>> GetAllByCategory(int categoryId)
@@ -80,7 +80,7 @@ namespace BlogApp.Services.Concrete
                 return new DataResult<ArticleListDto>(ResultStatus.Success,"Articles has successfully been brought.",new ArticleListDto(){ResultStatus = ResultStatus.Success, Articles = articles});
             }
 
-            return new DataResult<ArticleListDto>(ResultStatus.Error,"Article not found.",new ArticleListDto(){ResultStatus = ResultStatus.Error, Articles = null});
+            return new DataResult<ArticleListDto>(ResultStatus.Error,"Article not found.",new ArticleListDto(){ResultStatus = ResultStatus.Error, Articles = null, Message = "Article not found."});
         }
 
         public async Task<IDataResult<ArticleListDto>> GetAllNonDeleted()
@@ -91,7 +91,7 @@ namespace BlogApp.Services.Concrete
                 return new DataResult<ArticleListDto>(ResultStatus.Success,"Articles has successfully been brought.",new ArticleListDto(){ResultStatus = ResultStatus.Success, Articles = articles});
             }
 
-            return new DataResult<ArticleListDto>(ResultStatus.Error,"Article not found.",new ArticleListDto(){ResultStatus = ResultStatus.Error, Articles = null});
+            return new DataResult<ArticleListDto>(ResultStatus.Error,"Article not found.",new ArticleListDto(){ResultStatus = ResultStatus.Error, Articles = null, Message = "Article not found."});
         }
 
         public async Task<IDataResult<ArticleListDto>> GetAllNonDeletedAndActive()
@@ -102,7 +102,7 @@ namespace BlogApp.Services.Concrete
                 return new DataResult<ArticleListDto>(ResultStatus.Success,"Articles has successfully been brought.",new ArticleListDto(){ResultStatus = ResultStatus.Success, Articles = articles});
             }
 
-            return new DataResult<ArticleListDto>(ResultStatus.Error,"Article not found.",new ArticleListDto(){ResultStatus = ResultStatus.Error, Articles = null});
+            return new DataResult<ArticleListDto>(ResultStatus.Error,"Article not found.",new ArticleListDto(){ResultStatus = ResultStatus.Error, Articles = null, Message = "Article not found."});
         }
 
         public async Task<IResult> HardDelete(int articleId)
@@ -119,20 +119,20 @@ namespace BlogApp.Services.Concrete
             return new Result(ResultStatus.Error, "Article not found.");
         }
 
-        public async Task<IResult> Update(ArticleUpdateDto articleUpdateDto, string modifiedName)
+        public async Task<IDataResult<ArticleDto>> Update(ArticleUpdateDto articleUpdateDto, string modifiedName)
         {
             var article = _mapper.Map<Article>(articleUpdateDto);
 
             if(article != null){
                 article.ModifiedName = modifiedName;
 
-                await _unitOfWork.Articles.UpdateAsync(article);
+                var updatingArticle = await _unitOfWork.Articles.UpdateAsync(article);
                 await _unitOfWork.SaveAsync();
 
-                return new Result(ResultStatus.Success,$"{article.Title} has successfully been updated.");
+                return new DataResult<ArticleDto>(ResultStatus.Success,$"{article.Title} has successfully been updated.",new ArticleDto(){ResultStatus = ResultStatus.Success, Article = updatingArticle, Message = $"{article.Title} has successfully been updated."});
             }
 
-            return new Result(ResultStatus.Error,"Article not found.");
+            return new DataResult<ArticleDto>(ResultStatus.Error,"No article found.",new ArticleDto(){ResultStatus=ResultStatus.Error,Article=null,Message="No article found."});
         }
     }
 }

@@ -14,9 +14,9 @@ namespace BlogApp.Shared.Data.Abstact
 
         Task<IList<TEntity>> GetAllAsync(Expression<Func<TEntity,bool>> predicate = null, params Expression<Func<TEntity,object>>[] includeProperties);
 
-        Task AddAsync(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
 
-        Task UpdateAsync(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
         Task DeleteAsync(TEntity entity);
         Task<bool> AnyAsync(Expression<Func<TEntity,bool>> predicate);
         Task<int> CountAsync(Expression<Func<TEntity,bool>> preidcate);
