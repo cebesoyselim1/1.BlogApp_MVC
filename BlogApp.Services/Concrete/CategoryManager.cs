@@ -26,6 +26,7 @@ namespace BlogApp.Services.Concrete
         public async Task<IDataResult<CategoryDto>> Add(CategoryAddDto categoryAddDto, string createdName)
         {
             var category = _mapper.Map<Category>(categoryAddDto);
+            
             category.CreatedName = createdName;
             category.ModifiedName = createdName;
 

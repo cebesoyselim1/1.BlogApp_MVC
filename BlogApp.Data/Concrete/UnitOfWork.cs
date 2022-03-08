@@ -10,12 +10,12 @@ namespace BlogApp.Data.Concrete.EntityFramework
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private BlogContext _context;
-        EfArticleRepository _efArticleRepository;
-        EfCategoryRepository _efCategoryRepository;
-        EfCommentRepository _efCommentRepository;
-        EfRoleRepository _efRoleRepoistory;
-        EfUserRepository _efUserRepository;
+        private readonly BlogContext _context;
+        private EfArticleRepository _efArticleRepository;
+        private EfCategoryRepository _efCategoryRepository;
+        private EfCommentRepository _efCommentRepository;
+        private EfRoleRepository _efRoleRepoistory;
+        private EfUserRepository _efUserRepository;
 
         public UnitOfWork(BlogContext context)
         {

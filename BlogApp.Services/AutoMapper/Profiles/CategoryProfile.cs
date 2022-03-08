@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Dtos.ArticleDtos;
+using BlogApp.Entities.Dtos.CategoryDtos;
 
 namespace BlogApp.Services.AutoMapper.Profiles
 {
@@ -12,9 +13,10 @@ namespace BlogApp.Services.AutoMapper.Profiles
     {
         public CategoryProfile()
         {
-            CreateMap<ArticleAddDto,Article>().ForMember(dest => dest.CreatedName,opt => opt.MapFrom(c => DateTime.Now));
-
-            CreateMap<ArticleUpdateDto,Article>().ForMember(dest => dest.ModifiedName,opt => opt.MapFrom(c => DateTime.Now));
+            CreateMap<CategoryAddDto, Category>()
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(x => DateTime.Now));
+            CreateMap<CategoryUpdateDto, Category>()
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(x => DateTime.Now));
         }
     }
 }

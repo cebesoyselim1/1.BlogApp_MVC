@@ -2,6 +2,7 @@
 @model BlogApp.Entities.Dtos.CategoryDtos.CategoryListDto
 
 @if(Model.ResultStatus == ResultStatus.Success){
+    <div id="modalPlaceHolder" aria-hidden="true"></div>
     <div class="card mt-2">
         <div class="card-header">
             <i class="fas fa-table mr-1"></i>
@@ -78,19 +79,32 @@
                     {
                         text: 'Add',
                         className: "btn btn-success",
+                        attr: {
+                            id: "btnAdd"
+                        },
                         action: function ( e, dt, node, config ) {
-                            alert( 'Button activated' );
                         }
                     },
                     {
                         text: 'Refresh',
                         className: "btn btn-warning",
                         action: function ( e, dt, node, config ) {
-                            alert( 'Button activated' );
                         }
                     }
                 ]
             });
+
+            $(function(){
+                const modalPlaceHolder = $("#modalPlaceHolder");
+                const url = '@Url.Action("Add","Category")';
+                $("#btnAdd").click(function(){
+                    $.get(url).done(function(data){
+                        console.log(data);
+                        modalPlaceHolder.html(data);
+                        modalPlaceHolder.find(".modal").modal("show");
+                    })
+                })
+            })
         } );
     </script>
 }

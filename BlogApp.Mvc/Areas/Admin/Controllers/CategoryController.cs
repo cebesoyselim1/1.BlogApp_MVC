@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlogApp.Entities.Dtos.CategoryDtos;
 using BlogApp.Services.Abstract;
 using BlogApp.Shared.Utilities.Results.ComplexTypes;
 using Microsoft.AspNetCore.Mvc;
@@ -25,5 +26,10 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
 
             return View();
         }
+        [HttpGet]
+        public IActionResult Add(){
+            return PartialView("_CategoryAddPartial");
+        }
+        
     }
 }
