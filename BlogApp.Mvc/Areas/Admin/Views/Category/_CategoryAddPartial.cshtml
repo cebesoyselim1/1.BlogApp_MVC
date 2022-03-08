@@ -10,7 +10,9 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="Add" class="category-add-form">
+        <form asp-action="Add" id="category-add-form">
+          <div asp-validation-summary="All" id="validation-summary" style="display: none;" aria-hidden="true"></div>
+          <input type="hidden" name="IsValid" id="IsValid" value="@ViewData.ModelState.IsValid.ToString()" aria-hidden="true">
             <div class="form-group">
                 <label asp-for="Name" class="form-text"></label>
                 <input type="text" asp-for="Name" class="form-control">
@@ -34,7 +36,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-warning btn-block"><span class="fa-solid fa-floppy-disk"></span> Save changes</button>
+        <button type="button" class="btn btn-warning btn-block" id="btnSave"><span class="fa-solid fa-floppy-disk"></span> Save changes</button>
         <button type="button" class="btn btn-danger btn-block" data-dismiss="modal"><span class="fa-solid fa-xmark"></span> Close</button>
       </div>
     </div>

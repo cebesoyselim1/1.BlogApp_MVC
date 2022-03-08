@@ -99,10 +99,53 @@
                 const url = '@Url.Action("Add","Category")';
                 $("#btnAdd").click(function(){
                     $.get(url).done(function(data){
-                        console.log(data);
                         modalPlaceHolder.html(data);
                         modalPlaceHolder.find(".modal").modal("show");
                     })
+                })
+
+                modalPlaceHolder.on("click","#btnSave",function(e){
+                    e.preventDefault();
+                    const form = modalPlaceHolder.find("#category-add-form");
+                    const actionUrl = form.attr("action");
+                    const dataToSend = form.serialize();
+                    $.post(actionUrl,dataToSend).done(function(data){
+                        const categoryAddAjaxViewModel = jQuery.parseJSON(data);
+                        const newModelBody = $(".modal-body",categoryAddAjaxViewModel.CategoryAddPartial);
+                        modalPlaceHolder.find(".modal-body").replaceWith(newModelBody);
+                        const IsValid = newModelBody.find("#IsValid")[0].value == "True";
+                        if(IsValid){
+                            modalPlaceHolder.find(".modal").modal("hide");
+                            const newTableRow = `
+                            <tr>
+                                <td>${categoryAddAjaxViewModel.CategoryDto.Category.Id}</td>
+                                <td>${categoryAddAjaxViewModel.CategoryDto.Category.Name}</td>
+                                <td>${categoryAddAjaxViewModel.CategoryDto.Category.Description}</td>
+                                <td>${ConvertFirstLetterToUpperCase(categoryAddAjaxViewModel.CategoryDto.Category.IsActive.toString())}</td>
+                                <td>${ConvertFirstLetterToUpperCase(categoryAddAjaxViewModel.CategoryDto.Category.IsDeleted.toString())}</td>
+                                <td>${categoryAddAjaxViewModel.CategoryDto.Category.Note}</td>
+                                <td>${categoryAddAjaxViewModel.CategoryDto.Category.CreatedName}</td>
+                                <td>${ConvertToShortDate(categoryAddAjaxViewModel.CategoryDto.Category.CreatedDate)}</td>
+                                <td>${categoryAddAjaxViewModel.CategoryDto.Category.ModifiedName}</td>
+                                <td>${ConvertToShortDate(categoryAddAjaxViewModel.CategoryDto.Category.ModifiedDate)}</td>
+                            </tr>
+                            `;
+                            
+                            const newTableRowObject = $(newTableRow);
+                            newTableRowObject.hide();
+                            $("#categoriesTable").append(newTableRowObject);
+                            newTableRowObject.fadeIn(1500);
+                            toastr.success(`${categoryAddAjaxViewModel.CategoryDto.Category.Name} has successfully been added.`,"Succesfull");
+                        }else{
+                            let summaryText = "";
+                            $("#validation-summary > ul > li").each(function(){
+                                const text = $(this).text();
+                                summaryText += `*${text}/n`;
+                            })
+                            toastr.warning(`${summaryText}`);
+                        }
+                    })
+
                 })
             })
         } );
