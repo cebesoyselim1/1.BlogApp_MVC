@@ -9,7 +9,11 @@
              Categories Table
         </div>
         <div class="card-body">
+            <div class="spinner-border m-5" id="spinner" role="status" style="display: none;" aria-hidden="true">
+                <span class="sr-only">Loading...</span>
+            </div>
             <div class="table-responsive">
+
                 <table class="table table-bordered" id="categoriesTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
@@ -23,6 +27,7 @@
                             <th>Created Date</th>
                             <th>Modified By Name</th>
                             <th>Modified Date</th>
+                            <th></th>
                         </tr>
                     </thead>
 
@@ -38,6 +43,7 @@
                             <th>Created Date</th>
                             <th>Modified By Name</th>
                             <th>Modified Date</th>
+                            <th></th>
                         </tr>
                     </tfoot>
 
@@ -55,6 +61,10 @@
                                 <td>@category.CreatedDate.ToShortDateString()</td>
                                 <td>@category.ModifiedName</td>
                                 <td>@category.ModifiedDate.ToShortDateString()</td>
+                                <td>
+                                    <button class="btn btn-warning btn-block" data-id="@category.Id"><span class="fa-solid fa-pen-to-square"></span></button>
+                                    <button class="btn btn-danger btn-block"><span class="fa-solid fa-circle-xmark"></span></button>
+                                </td>
                             </tr>
                         }                    
                     </tbody>
@@ -89,6 +99,49 @@
                         text: 'Refresh',
                         className: "btn btn-warning",
                         action: function ( e, dt, node, config ) {
+                            $.ajax({
+                                type: 'GET',
+                                url: '@Url.Action("GetAll","Category")',
+                                contentType: 'application/json',
+                                beforeSend: function(){
+                                    $("#spinner").show();
+                                    $("#categoriesTable").hide();
+                                },
+                                success: function(data){
+                                    const categoryAddDto = jQuery.parseJSON(data);
+                                    if(categoryAddDto.ResultStatus == 0){
+                                        let newTableBody = "";
+                                        $.each(categoryAddDto.Categories.$values,function(index,category){
+                                            newTableBody += `
+                                                <tr>
+                                                    <td>${category.Id}</td>
+                                                    <td>${category.Name}</td>
+                                                    <td>${category.Description}</td>
+                                                    <td>${ConvertFirstLetterToUpperCase(category.IsActive.toString())}</td>
+                                                    <td>${ConvertFirstLetterToUpperCase(category.IsDeleted.toString())}</td>
+                                                    <td>${category.Note}</td>
+                                                    <td>${category.CreatedName}</td>
+                                                    <td>${ConvertToShortDate(category.CreatedDate)}</td>
+                                                    <td>${category.ModifiedName}</td>
+                                                    <td>${ConvertToShortDate(category.ModifiedDate)}</td>
+                                                </tr>
+                                                `;
+                                        });
+                                        const newTableBodyObject = $(newTableBody);
+                                        $("#categoriesTable > tbody").replaceWith(newTableBodyObject)
+                                        $("#categoriesTable").fadeIn(2000);
+                                        $("#spinner").hide();
+
+                                        toastr.success(`${categoryAddDto.Message}`,"Successfull")
+                                    }
+                                    else{
+                                        toastr.error(`${categoryAddDto.Message}`,"Error")
+                                    }
+                                },
+                                error: function(err){
+                                    toastr.error(`${err.responseText}`,"Error")
+                                }
+                            })
                         }
                     }
                 ]
