@@ -47,7 +47,7 @@ namespace BlogApp.Services.Concrete
             if(category != null){
                 category.ModifiedName = modifiedName;
                 category.ModifiedDate = DateTime.Now;
-                category.IsDeleted = false;
+                category.IsDeleted = true;
 
                 await _unitOfWork.Categories.UpdateAsync(category);
                 await _unitOfWork.SaveAsync();

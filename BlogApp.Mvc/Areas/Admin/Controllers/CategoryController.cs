@@ -22,7 +22,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
             _categoryService = categoryService;
         }
         public async Task<IActionResult> Index(){
-            var result = await _categoryService.GetAll();
+            var result = await _categoryService.GetAllNonDeleted();
 
             if(result.ResultStatus == ResultStatus.Success){
                 return View(result.Data);
@@ -53,11 +53,20 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         public async Task<JsonResult> GetAll(){
-            var result = await _categoryService.GetAll();
+            var result = await _categoryService.GetAllNonDeleted();
             var categoryListDto = JsonSerializer.Serialize(result.Data,new JsonSerializerOptions(){
                 ReferenceHandler = ReferenceHandler.Preserve
             });
             return Json(categoryListDto);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Delete(int categoryId){
+            var result = await _categoryService.Delete(categoryId,"Selim Cebesoy");
+            var categoryDto = JsonSerializer.Serialize(result.Data,new JsonSerializerOptions(){
+                ReferenceHandler = ReferenceHandler.Preserve
+            });
+
+            return Json(categoryDto);
         }
     }
 }

@@ -50,7 +50,7 @@
                     <tbody>
                         @foreach (var category in Model.Categories)
                         {
-                            <tr>
+                            <tr data-id="category-row-@category.Id">
                                 <td>@category.Id</td>
                                 <td>@category.Name</td>
                                 <td>@category.Description</td>
@@ -62,8 +62,8 @@
                                 <td>@category.ModifiedName</td>
                                 <td>@category.ModifiedDate.ToShortDateString()</td>
                                 <td>
-                                    <button class="btn btn-warning btn-block" data-id="@category.Id"><span class="fa-solid fa-pen-to-square"></span></button>
-                                    <button class="btn btn-danger btn-block"><span class="fa-solid fa-circle-xmark"></span></button>
+                                    <button class="btn btn-warning btn-block"><span class="fa-solid fa-pen-to-square"></span></button>
+                                    <button class="btn btn-danger btn-delete btn-block" data-id="@category.Id"><span class="fa-solid fa-circle-xmark"></span></button>
                                 </td>
                             </tr>
                         }                    
@@ -113,7 +113,7 @@
                                         let newTableBody = "";
                                         $.each(categoryAddDto.Categories.$values,function(index,category){
                                             newTableBody += `
-                                                <tr>
+                                                <tr data-id="category-row-${category.id}">
                                                     <td>${category.Id}</td>
                                                     <td>${category.Name}</td>
                                                     <td>${category.Description}</td>
@@ -124,6 +124,10 @@
                                                     <td>${ConvertToShortDate(category.CreatedDate)}</td>
                                                     <td>${category.ModifiedName}</td>
                                                     <td>${ConvertToShortDate(category.ModifiedDate)}</td>
+                                                    <td>
+                                                        <button class="btn btn-warning btn-block"><span class="fa-solid fa-pen-to-square"></span></button>
+                                                        <button class="btn btn-danger btn-delete btn-block" data-id="${category.id}"><span class="fa-solid fa-circle-xmark"></span></button>
+                                                    </td>
                                                 </tr>
                                                 `;
                                         });
@@ -135,10 +139,14 @@
                                         toastr.success(`${categoryAddDto.Message}`,"Successfull")
                                     }
                                     else{
+                                        $("#categoriesTable").fadeIn(1000);
+                                        $("#spinner").hide();
                                         toastr.error(`${categoryAddDto.Message}`,"Error")
                                     }
                                 },
                                 error: function(err){
+                                    $("#categoriesTable").fadeIn(1000);
+                                    $("#spinner").hide();
                                     toastr.error(`${err.responseText}`,"Error")
                                 }
                             })
@@ -170,7 +178,7 @@
                         if(IsValid){
                             modalPlaceHolder.find(".modal").modal("hide");
                             const newTableRow = `
-                            <tr>
+                            <tr data-id="category-row-${categoryAddAjaxViewModel.CategoryDto.Category.Id}">
                                 <td>${categoryAddAjaxViewModel.CategoryDto.Category.Id}</td>
                                 <td>${categoryAddAjaxViewModel.CategoryDto.Category.Name}</td>
                                 <td>${categoryAddAjaxViewModel.CategoryDto.Category.Description}</td>
@@ -181,6 +189,10 @@
                                 <td>${ConvertToShortDate(categoryAddAjaxViewModel.CategoryDto.Category.CreatedDate)}</td>
                                 <td>${categoryAddAjaxViewModel.CategoryDto.Category.ModifiedName}</td>
                                 <td>${ConvertToShortDate(categoryAddAjaxViewModel.CategoryDto.Category.ModifiedDate)}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-block"><span class="fa-solid fa-pen-to-square"></span></button>
+                                    <button class="btn btn-danger btn-delete btn-block" data-id="${categoryAddAjaxViewModel.CategoryDto.Category.Id}"><span class="fa-solid fa-circle-xmark"></span></button>
+                                </td>                                
                             </tr>
                             `;
                             
@@ -198,7 +210,56 @@
                             toastr.warning(`${summaryText}`);
                         }
                     })
+                })
+                $(document).on("click",".btn-delete",function(e){
+                    e.preventDefault();
+                    const categoryId = $(this).attr("data-id");
+                    const tableRow = $(`[data-id="category-row-${categoryId}"]`);
+                    const categoryName = tableRow.find("td:eq(1)").text();
 
+                    Swal.fire({
+                        title: 'Are you sure that you want to delete?',
+                        text: `${categoryName} will be deleted!`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: "No, don't delete!"
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                type: 'POST',
+                                dataType: 'json',
+                                data: { categoryId: categoryId },
+                                url: '@Url.Action("Delete","Category")',
+                                success: function(data){
+                                    const categoryDto = jQuery.parseJSON(data);
+                                    if(categoryDto.ResultStatus == 0){
+                                        Swal.fire(
+                                            'Deleted!',
+                                            `${categoryDto.Message}`,
+                                            'success'
+                                        );
+                                        tableRow.fadeOut(2000);
+                                    }else{
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Oops...',
+                                            text: `${categoryDto.Message}`,
+                                        })
+                                    }
+                                },
+                                error: function(err){
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: `${err.responseText}`,
+                                    })
+                                }
+                            })
+                        }
+                    })
                 })
             })
         } );
