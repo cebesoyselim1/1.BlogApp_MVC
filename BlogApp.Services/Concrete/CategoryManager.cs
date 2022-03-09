@@ -139,6 +139,16 @@ namespace BlogApp.Services.Concrete
             });
         }
 
+        public async Task<IDataResult<CategoryUpdateDto>> GetUpdateDto(int categoryId){
+            var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId);
+            
+            if(category != null){
+                var categoryUpdateDto = _mapper.Map<CategoryUpdateDto>(category);
+                return new DataResult<CategoryUpdateDto>(ResultStatus.Success,$"{category.Name} has successfully been updated.",categoryUpdateDto);
+            }
+            return new DataResult<CategoryUpdateDto>(ResultStatus.Error,$"Category not found.",null);
+        }
+
         public async Task<IResult> HardDelete(int categoryId)
         {
              var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId);
@@ -155,7 +165,8 @@ namespace BlogApp.Services.Concrete
 
         public async Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto categoryUpdateDto, string modifiedName)
         {
-            var category = _mapper.Map<Category>(categoryUpdateDto);
+            var oldCategory = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryUpdateDto.Id);
+            var category = _mapper.Map<CategoryUpdateDto,Category>(categoryUpdateDto,oldCategory);
 
             if(category != null){
                 category.ModifiedName = modifiedName;

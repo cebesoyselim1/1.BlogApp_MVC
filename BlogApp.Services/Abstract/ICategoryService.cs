@@ -11,6 +11,7 @@ namespace BlogApp.Services.Abstract
     public interface ICategoryService
     {
         Task<IDataResult<CategoryDto>> Get(int categoryId);
+        Task<IDataResult<CategoryUpdateDto>> GetUpdateDto(int categoryId);
         Task<IDataResult<CategoryListDto>> GetAll();
         Task<IDataResult<CategoryListDto>> GetAllNonDeleted();
         Task<IDataResult<CategoryListDto>> GetAllNonDeletedAndActive();

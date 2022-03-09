@@ -68,5 +68,31 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
 
             return Json(categoryDto);
         }
+        [HttpGet]
+        public async Task<IActionResult> Update(int categoryId){
+            var result = await _categoryService.GetUpdateDto(categoryId);
+            if(result.ResultStatus == ResultStatus.Success){
+                return PartialView("_CategoryUpdatePartial",result.Data);
+            }else{
+                return NotFound();
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> Update(CategoryUpdateDto categoryUpdateDto){
+            if(ModelState.IsValid){
+                var result = await _categoryService.Update(categoryUpdateDto,"Selim Cebesoy");
+                if(result.ResultStatus == ResultStatus.Success){
+                    var categoryUpdateAjaxViewModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel(){
+                        CategoryDto = result.Data,
+                        CategoryUpdatePartial = await this.RenderViewToStringAsync("_CategoryUpdatePartial",categoryUpdateDto)
+                    });
+                    return Json(categoryUpdateAjaxViewModel);
+                }
+            }
+            var categoryUpdateAjaxErrorViewModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel(){
+                CategoryUpdatePartial = await this.RenderViewToStringAsync("_CategoryUpdatePartial",categoryUpdateDto)
+            });
+            return Json(categoryUpdateAjaxErrorViewModel);
+        }
     }
 }

@@ -1,18 +1,19 @@
-@model BlogApp.Entities.Dtos.CategoryDtos.CategoryAddDto
+@model BlogApp.Entities.Dtos.CategoryDtos.CategoryUpdateDto
 
 <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"><span class="fa-solid fa-plus"></span> Category Add</h5>
+        <h5 class="modal-title"><span class="fa-solid fa-pen-to-square"></span> @Model.Name Edit Form</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form asp-action="Add" id="category-add-form">
-          <div asp-validation-summary="All" id="validation-summary" style="display: none;" aria-hidden="true"></div>
-          <input type="hidden" name="IsValid" id="IsValid" value="@ViewData.ModelState.IsValid.ToString()" aria-hidden="true">
+        <form asp-action="Update" id="category-update-form">
+            <div asp-validation-summary="All" id="validation-summary" style="display: none;" aria-hidden="true"></div>
+            <input type="hidden" name="IsValid" id="IsValid" value="@ViewData.ModelState.IsValid.ToString()" aria-hidden="true">
+            <input type="hidden" asp-for="Id">
             <div class="form-group">
                 <label asp-for="Name" class="form-text"></label>
                 <input type="text" asp-for="Name" class="form-control">
@@ -33,10 +34,15 @@
                 <label asp-for="IsActive" class="form-check-label"></label>
                 <span asp-validation-for="IsActive" class="text-danger"></span>
             </div>
+            <div class="form-check">
+                <input type="checkbox" asp-for="IsDeleted" class="form-check-input">
+                <label asp-for="IsDeleted" class="form-check-label"></label>
+                <span asp-validation-for="IsDeleted" class="text-danger"></span>
+            </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-warning btn-block" id="btnSave"><span class="fa-solid fa-floppy-disk"></span> Save changes</button>
+        <button type="button" class="btn btn-warning btn-block" id="btnUpdate"><span class="fa-solid fa-floppy-disk"></span> Save changes</button>
         <button type="button" class="btn btn-danger btn-block" data-dismiss="modal"><span class="fa-solid fa-xmark"></span> Close</button>
       </div>
     </div>
