@@ -14,9 +14,6 @@ namespace BlogApp.Data.Concrete.EntityFramework
         private EfArticleRepository _efArticleRepository;
         private EfCategoryRepository _efCategoryRepository;
         private EfCommentRepository _efCommentRepository;
-        private EfRoleRepository _efRoleRepoistory;
-        private EfUserRepository _efUserRepository;
-
         public UnitOfWork(BlogContext context)
         {
             _context = context;
@@ -28,10 +25,6 @@ namespace BlogApp.Data.Concrete.EntityFramework
         public ICategoryRepository Categories => _efCategoryRepository ?? new EfCategoryRepository(_context);
         
         public ICommentRepository Comments => _efCommentRepository ?? new EfCommentRepository(_context);
-
-        public IRoleRepository Roles => _efRoleRepoistory ?? new EfRoleRepository(_context);
-
-        public IUserRepository Users => _efUserRepository ?? new EfUserRepository(_context);
 
         public async ValueTask DisposeAsync()
         {
