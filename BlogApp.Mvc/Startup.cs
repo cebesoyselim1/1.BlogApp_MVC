@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using BlogApp.Mvc.AutoMapper.Profiles;
 using BlogApp.Services.AutoMapper.Profiles;
 using BlogApp.Services.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -25,7 +26,7 @@ namespace BlogApp.Mvc
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             });
             services.AddSession();
-            services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile));
+            services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile),typeof(UserProfile));
             services.LoadMyServices();
             services.ConfigureApplicationCookie(options => {
                 options.LoginPath = new PathString("/Admin/User/Login/");

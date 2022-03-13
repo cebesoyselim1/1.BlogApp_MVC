@@ -1,0 +1,50 @@
+@model BlogApp.Entities.Dtos.UserDtos.UserAddDto
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><span class="fa-solid fa-plus"></span> User Add</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form asp-action="Add" id="user-add-form">
+          <div asp-validation-summary="All" id="validation-summary" style="display: none;" aria-hidden="true"></div>
+          <input type="hidden" name="IsValid" id="IsValid" value="@ViewData.ModelState.IsValid.ToString()" aria-hidden="true">
+            <div class="form-group">
+                <label asp-for="Username" class="form-text"></label>
+                <input type="text" asp-for="Username" class="form-control">
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="form-text"></label>
+                <input type="email" asp-for="Email" class="form-control">
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="form-text"></label>
+                <input type="password" asp-for="Password" class="form-control">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="form-text"></label>
+                <input type="text" asp-for="PhoneNumber" class="form-control">
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PictureFile" class="form-text"></label>
+                <input type="file" accept="image/*" asp-for="PictureFile" class="form-file">
+                <span asp-validation-for="PictureFile" class="text-danger"></span>
+            </div>
+            
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning btn-block" id="btnSave"><span class="fa-solid fa-floppy-disk"></span> Save changes</button>
+        <button type="button" class="btn btn-danger btn-block" data-dismiss="modal"><span class="fa-solid fa-xmark"></span> Close</button>
+      </div>
+    </div>
+  </div>
+</div>

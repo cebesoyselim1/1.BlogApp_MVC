@@ -1,0 +1,70 @@
+@using BlogApp.Shared.Utilities.Results.ComplexTypes
+@model BlogApp.Entities.Dtos.UserDtos.UserListDto
+
+@if(Model.ResultStatus == ResultStatus.Success){
+    <div id="modalPlaceHolder" aria-hidden="true"></div>
+    <div class="card mt-2">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+             Users Table
+        </div>
+        <div class="card-body">
+            <div class="spinner-border m-5" id="spinner" role="status" style="display: none;" aria-hidden="true">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <div class="table-responsive">
+
+                <table class="table table-bordered" id="usersTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>UserName</th>
+                            <th>Email</th>
+                            <th>Telephone</th>
+                            <th>Picture</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tfoot>
+                        <tr>
+                            <th>Id</th>
+                            <th>UserName</th>
+                            <th>Email</th>
+                            <th>Telephone</th>
+                            <th>Picture</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr data-id="user-row-@user.Id">
+                                <td>@user.Id</td>
+                                <td>@user.UserName</td>
+                                <td>@user.Email</td>
+                                <td>@user.PhoneNumber</td>
+                                <td>
+                                    <img src="~/img/@user.Picture" alt="picture" style="max-width: 50px;">
+                                </td>
+                                <td>
+                                    <button class="btn btn-warning btn-update btn-block" data-id="@user.Id"><span class="fa-solid fa-pen-to-square"></span></button>
+                                    <button class="btn btn-danger btn-delete btn-block" data-id="@user.Id"><span class="fa-solid fa-circle-xmark"></span></button>
+                                </td>
+                            </tr>
+                        }                    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}else{
+    <div class="alert alert-danger mt-4">
+        No Users Found.
+    </div>
+}
+
+@section Scripts{
+    <script src="~/js/userIndex.js" type="application/ecmascript"></script>
+}
