@@ -10,7 +10,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
     public class HomeController:Controller
     {
         [Area("Admin")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Editor")]
         public IActionResult Index(){
             return View();
         }

@@ -1,3 +1,5 @@
+@model BlogApp.Mvc.Areas.Admin.Models.UserWithRolesViewModel
+
 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
     <div class="sb-sidenav-menu">
         <div class="nav">
@@ -36,30 +38,32 @@
                 </div>
                 Categories
             </a>
-
-            <div class="sb-sidenav-menu-heading">
-                Users
-            </div>
-
-            <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">
-                <div class="sb-nav-link-icon">
-                    <i class="fas fa-users"></i>
+            
+            @if(Model.Roles.Contains("Admin")){
+                <div class="sb-sidenav-menu-heading">
+                    Users
                 </div>
-                Users
-            </a>
 
-            <a class="nav-link" asp-area="Admin" asp-controller="Role" asp-action="Index">
-                <div class="sb-nav-link-icon">
-                    <i class="fas fa-user-shield"></i>
-                </div>
-                Roles
-            </a>
+                <a class="nav-link" asp-area="Admin" asp-controller="User" asp-action="Index">
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    Users
+                </a>
+
+                <a class="nav-link" asp-area="Admin" asp-controller="Role" asp-action="Index">
+                    <div class="sb-nav-link-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    Roles
+                </a>
+            }
                             
         </div>
     </div>
 
     <div class="sb-sidenav-footer">
-        <div class="small">Logged in as:</div>
-        Start Bootstrap
+        <div class="small">Logged in as: @Model.User.UserName</div>
+        BlogApp
     </div>
 </nav>

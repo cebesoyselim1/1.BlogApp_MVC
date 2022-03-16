@@ -36,7 +36,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
             _mapper = mapper;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(){
             var users = await _userManager.Users.ToListAsync();
             return View(new UserListDto(){
@@ -70,12 +70,60 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         
         [HttpGet]
         [Authorize]
+        public async Task<IActionResult> Logout(){
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index","Home",new {Area = ""});
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> ChangeDetails(){
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var userUpdateDto = _mapper.Map<UserUpdateDto>(user);
+            return View(userUpdateDto);
+        } 
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangeDetails(UserUpdateDto userUpdateDto){
+            if(ModelState.IsValid){
+                var isPictureUpdateted = false;
+                var oldUser = await _userManager.GetUserAsync(HttpContext.User);
+                var oldUserPicture = oldUser.Picture;
+                if(userUpdateDto.PictureFile != null){
+                    userUpdateDto.Picture = await ImageUpload(userUpdateDto.Username,userUpdateDto.PictureFile);
+                    if(oldUserPicture != "defaultUser.png"){
+                        isPictureUpdateted = true;
+                    }
+                }
+
+                var updatedUser = _mapper.Map<UserUpdateDto,User>(userUpdateDto,oldUser);
+                var result = await _userManager.UpdateAsync(updatedUser);
+                if(result.Succeeded){
+                    if(isPictureUpdateted){
+                        ImageDelete(oldUserPicture);
+                    }
+                    TempData.Add("SuccessMessage",$"{updatedUser.UserName} has successfully been updated.");
+                    return View(userUpdateDto);
+                }else{
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("",error.Description);
+                    }
+                    return View(userUpdateDto);
+                }
+            }
+            return View(userUpdateDto);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Add(){
             return PartialView("_UserAddPartial");
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(UserAddDto userAddDto){
             if(ModelState.IsValid){
                 userAddDto.Picture = await ImageUpload(userAddDto.Username,userAddDto.PictureFile);
@@ -110,7 +158,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUsers(){
             var users = await _userManager.Users.ToListAsync();
             var userListDto = JsonSerializer.Serialize(new UserListDto(){
@@ -123,7 +171,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int userId){
             var user = await _userManager.FindByIdAsync(userId.ToString());
             var result = await _userManager.DeleteAsync(user);
@@ -149,7 +197,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int userId){
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
             var userUpdateDto = _mapper.Map<UserUpdateDto>(user);
@@ -157,7 +205,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(UserUpdateDto userUpdateDto){
             if(ModelState.IsValid){
                 var isPictureUploaded = false;
@@ -201,7 +249,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
             return Json(userUpdateAjaxErrorViewModel);
         }
         
-        [Authorize]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<string> ImageUpload(string userName, IFormFile pictureFile){
 
             var wwwRoot = _env.WebRootPath;
@@ -216,7 +264,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
             return newFileName;
         }
         
-        [Authorize]
+        [Authorize(Roles = "Admin,Editor")]
         public bool ImageDelete(string imageName){
             var wwwRoot = _env.WebRootPath;
             var path = Path.Combine($@"{wwwRoot}\img",imageName);
@@ -227,5 +275,8 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
             return false;
         }
 
+        public IActionResult AccessDenied(){
+            return View();
+        }
     }
 }
