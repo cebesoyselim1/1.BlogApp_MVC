@@ -9,6 +9,8 @@ using AutoMapper;
 using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Dtos.UserDtos;
 using BlogApp.Mvc.Areas.Admin.Models;
+using BlogApp.Mvc.Helpers.Abstract;
+using BlogApp.Mvc.Helpers.Concrete;
 using BlogApp.Shared.Utilities.Extensions;
 using BlogApp.Shared.Utilities.Results.ComplexTypes;
 using Microsoft.AspNetCore.Authorization;
@@ -27,13 +29,15 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IWebHostEnvironment _env;
         private readonly IMapper _mapper;
+        private readonly IImageHelper _imageHelper;
 
-        public UserController(UserManager<User> userManager, SignInManager<User> signInManager, IWebHostEnvironment env, IMapper mapper)
+        public UserController(UserManager<User> userManager, SignInManager<User> signInManager, IWebHostEnvironment env, IMapper mapper, IImageHelper imageHelper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _env = env;
             _mapper = mapper;
+            _imageHelper = imageHelper;
         }
 
         [Authorize(Roles = "Admin")]
@@ -91,8 +95,9 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
                 var oldUser = await _userManager.GetUserAsync(HttpContext.User);
                 var oldUserPicture = oldUser.Picture;
                 if(userUpdateDto.PictureFile != null){
-                    userUpdateDto.Picture = await ImageUpload(userUpdateDto.Username,userUpdateDto.PictureFile);
-                    if(oldUserPicture != "defaultUser.png"){
+                    var imageUpdateDto = await _imageHelper.Upload(userUpdateDto.Username,userUpdateDto.PictureFile);
+                    userUpdateDto.Picture = imageUpdateDto.ResultStatus == ResultStatus.Success ? imageUpdateDto.Data.FullName : oldUserPicture;
+                    if(oldUserPicture != "UsersImage/defaultUser.png"){
                         isPictureUpdateted = true;
                     }
                 }
@@ -101,7 +106,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
                 var result = await _userManager.UpdateAsync(updatedUser);
                 if(result.Succeeded){
                     if(isPictureUpdateted){
-                        ImageDelete(oldUserPicture);
+                        _imageHelper.Delete(oldUserPicture);
                     }
                     TempData.Add("SuccessMessage",$"{updatedUser.UserName} has successfully been updated.");
                     return View(userUpdateDto);
@@ -117,6 +122,41 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize]
+        public IActionResult PasswordChange(){
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> PasswordChange(UserPasswordChangeDto userPasswordChangeDto){
+            if(ModelState.IsValid){
+                var user = await _userManager.GetUserAsync(HttpContext.User);
+                var IsValidate = await _userManager.CheckPasswordAsync(user,userPasswordChangeDto.CurrentPassword);
+                if(IsValidate){
+                    var result = await _userManager.ChangePasswordAsync(user,userPasswordChangeDto.CurrentPassword,userPasswordChangeDto.NewPassword);
+                    if(result.Succeeded){
+                        await _userManager.UpdateSecurityStampAsync(user);
+                        await _signInManager.SignOutAsync();
+                        await _signInManager.PasswordSignInAsync(user,userPasswordChangeDto.NewPassword,true,false);
+                        TempData.Add("SuccessMessage","Password has successfully been updated.");
+                        return View();
+                    }else{
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError("",error.Description);
+                        }
+                        return View(userPasswordChangeDto);
+                    }
+                }else{
+                    ModelState.AddModelError("","Current password you entered is wrong.");
+                    return View(userPasswordChangeDto);
+                }
+            }
+            return View(userPasswordChangeDto);
+        }
+
+        [HttpGet]
         [Authorize(Roles = "Admin")]
         public IActionResult Add(){
             return PartialView("_UserAddPartial");
@@ -126,7 +166,8 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(UserAddDto userAddDto){
             if(ModelState.IsValid){
-                userAddDto.Picture = await ImageUpload(userAddDto.Username,userAddDto.PictureFile);
+                var imageUpdateDto = await _imageHelper.Upload(userAddDto.Username,userAddDto.PictureFile);
+                userAddDto.Picture = imageUpdateDto.ResultStatus == ResultStatus.Success ? imageUpdateDto.Data.FullName : "UserImages/defaultUser.png";
                 var user = _mapper.Map<User>(userAddDto);
                 var result = await _userManager.CreateAsync(user,userAddDto.Password);
                 if(result.Succeeded){
@@ -212,14 +253,15 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
                 var oldUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userUpdateDto.Id);
                 var oldPicture = oldUser.Picture;
                 if(userUpdateDto.PictureFile != null){
-                    userUpdateDto.Picture = await ImageUpload(userUpdateDto.Username,userUpdateDto.PictureFile);
+                    var imageUpdateDto = await _imageHelper.Upload(userUpdateDto.Username,userUpdateDto.PictureFile);
+                    userUpdateDto.Picture = imageUpdateDto.ResultStatus == ResultStatus.Success ? imageUpdateDto.Data.FullName : "UserImages/defaultUser.png";
                     isPictureUploaded = true;
                 }
                 var user = _mapper.Map<UserUpdateDto,User>(userUpdateDto,oldUser);
                 var result = await _userManager.UpdateAsync(user);
                 if(result.Succeeded){
                     if(isPictureUploaded){
-                        ImageDelete(oldPicture);
+                        _imageHelper.Delete(oldPicture);
                     }
                     var userUpdateAjaxViewModel = JsonSerializer.Serialize(new UserUpdateAjaxViewModel(){
                         UserDto = new UserDto(){
@@ -247,32 +289,6 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
                 UserUpdatePartial = await this.RenderViewToStringAsync("_UserUpdatePartial",userUpdateDto)
             });
             return Json(userUpdateAjaxErrorViewModel);
-        }
-        
-        [Authorize(Roles = "Admin,Editor")]
-        public async Task<string> ImageUpload(string userName, IFormFile pictureFile){
-
-            var wwwRoot = _env.WebRootPath;
-            //var fileName = Path.GetFileNameWithoutExtension(userAddDto.PictureFile.FileName);
-            var fileExtension = Path.GetExtension(pictureFile.FileName);
-            DateTime dateTime = new DateTime();
-            var newFileName = $"{userName}_{dateTime.FullDateAndTimeStringWithUnderscore()}{fileExtension}";
-            var path = Path.Combine($@"{wwwRoot}\img",newFileName);
-            await using(var stream = new FileStream(path,FileMode.Create)){
-                await pictureFile.CopyToAsync(stream);
-            }
-            return newFileName;
-        }
-        
-        [Authorize(Roles = "Admin,Editor")]
-        public bool ImageDelete(string imageName){
-            var wwwRoot = _env.WebRootPath;
-            var path = Path.Combine($@"{wwwRoot}\img",imageName);
-            if(System.IO.File.Exists(path)){
-                System.IO.File.Delete(path);
-                return true;
-            }
-            return false;
         }
 
         public IActionResult AccessDenied(){

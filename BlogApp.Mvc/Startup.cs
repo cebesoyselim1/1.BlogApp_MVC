@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using BlogApp.Mvc.AutoMapper.Profiles;
+using BlogApp.Mvc.Helpers.Abstract;
+using BlogApp.Mvc.Helpers.Concrete;
 using BlogApp.Services.AutoMapper.Profiles;
 using BlogApp.Services.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -28,6 +30,7 @@ namespace BlogApp.Mvc
             services.AddSession();
             services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile),typeof(UserProfile));
             services.LoadMyServices();
+            services.AddScoped<IImageHelper,ImageHelper>();
             services.ConfigureApplicationCookie(options => {
                 options.LoginPath = new PathString("/Admin/User/Login/");
                 options.LogoutPath = new PathString("/Admin/User/Logout/");

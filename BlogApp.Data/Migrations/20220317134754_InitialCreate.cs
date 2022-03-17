@@ -250,8 +250,8 @@ namespace BlogApp.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "96c78fbe-31ce-4b6a-b916-c86ba13de245", "Admin", "ADMIN" },
-                    { 2, "596738de-62bc-4e4e-abb8-0bb122b47bc4", "Editor", "EDITOR" }
+                    { 1, "ce5dc399-38ed-4439-906d-db9d0836c5b8", "Admin", "ADMIN" },
+                    { 2, "d698ae08-0a9d-4a71-9723-181c7d7679b7", "Editor", "EDITOR" }
                 });
 
             migrationBuilder.InsertData(
@@ -259,8 +259,8 @@ namespace BlogApp.Data.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "578aa0b2-6348-44a0-a252-d8c3386e7e5b", "adimnuser@blogapp.com", true, false, null, "ADMINUSER@BLOGAPP.COM", "ADMINUSER", "AQAAAAEAACcQAAAAEMm8VE/TYX0ivN1n6yvLrj4PBb4c9PcNJACxSeoHF4jpJ29Ma8CHWR+mnMPjuTy36Q==", "+905555555555", true, "defaultUser.png", "5cda36a1-8a74-4fe7-9441-3a3a98e57c39", false, "adminuser" },
-                    { 2, 0, "1de4ba0a-2bcb-4ff7-94b5-f68206487152", "editoruser@blogapp.com", true, false, null, "EDITORUSER@BLOGAPP.COM", "EDITORUSER", "AQAAAAEAACcQAAAAEKEl54hLBrr8Z3UPT70kztsoHClynaF2iy5syoMTWD9CvFVxVSdnXvcldpcICmfAXg==", "+904444444444", true, "defaultUser.png", "62b73714-896d-40ec-835f-ba7f089d0062", false, "editoruser" }
+                    { 1, 0, "8eed07eb-e481-4cb9-8fe9-b12ae77af3b5", "adimnuser@blogapp.com", true, false, null, "ADMINUSER@BLOGAPP.COM", "ADMINUSER", "AQAAAAEAACcQAAAAEIclHkTE2T9+ryk7bge2UtCqA4lKUpx47h0lvAkWLiYRF34TkWvMgSZZmgQN203mSg==", "+905555555555", true, "defaultUser.png", "02f48cd6-414e-4f70-a1c8-f598210f7a09", false, "adminuser" },
+                    { 2, 0, "8cc2174d-e78f-4550-932b-6523e3afe05c", "editoruser@blogapp.com", true, false, null, "EDITORUSER@BLOGAPP.COM", "EDITORUSER", "AQAAAAEAACcQAAAAEGxdL7v2WVKLnLCZPHe2wOeZgSmXPPx19ZpE9+fl+78dEvKvWE6xKr/nu1eYDv4xOA==", "+904444444444", true, "defaultUser.png", "22441db6-4d6b-4961-8ef8-179da42a1829", false, "editoruser" }
                 });
 
             migrationBuilder.InsertData(
@@ -268,9 +268,9 @@ namespace BlogApp.Data.Migrations
                 columns: new[] { "Id", "CreatedDate", "CreatedName", "Description", "IsActive", "IsDeleted", "ModifiedDate", "ModifiedName", "Name", "Note" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2022, 3, 15, 13, 46, 20, 685, DateTimeKind.Local).AddTicks(4646), "InitialCreate", "Everthing about C# programming language", true, false, new DateTime(2022, 3, 15, 13, 46, 20, 685, DateTimeKind.Local).AddTicks(5082), "InitialCreate", "C#", "C# Programming Language" },
-                    { 2, new DateTime(2022, 3, 15, 13, 46, 20, 685, DateTimeKind.Local).AddTicks(7344), "InitialCreate", "Everthing about C++ programming language", true, false, new DateTime(2022, 3, 15, 13, 46, 20, 685, DateTimeKind.Local).AddTicks(7345), "InitialCreate", "C++", "C++ Programming Language" },
-                    { 3, new DateTime(2022, 3, 15, 13, 46, 20, 685, DateTimeKind.Local).AddTicks(7351), "InitialCreate", "Everthing about Javascript programming language", true, false, new DateTime(2022, 3, 15, 13, 46, 20, 685, DateTimeKind.Local).AddTicks(7353), "InitialCreate", "Javascript", "Javascript Programming Language" }
+                    { 1, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(958), "InitialCreate", "Everthing about C# programming language", true, false, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(1252), "InitialCreate", "C#", "C# Programming Language" },
+                    { 2, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2637), "InitialCreate", "Everthing about C++ programming language", true, false, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2638), "InitialCreate", "C++", "C++ Programming Language" },
+                    { 3, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2642), "InitialCreate", "Everthing about Javascript programming language", true, false, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2643), "InitialCreate", "Javascript", "Javascript Programming Language" }
                 });
 
             migrationBuilder.InsertData(

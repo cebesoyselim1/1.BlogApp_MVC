@@ -12,8 +12,7 @@ namespace BlogApp.Shared.Data.Concrete.EntityFramework
     public class EfEntityRepositoryBase<TEntity> : IEntityRepository<TEntity>
     where TEntity:class,IEntity,new()
     {
-
-        private readonly DbContext _context;
+        protected readonly DbContext _context;
 
         public EfEntityRepositoryBase(DbContext context)
         {

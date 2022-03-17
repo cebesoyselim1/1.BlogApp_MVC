@@ -9,7 +9,7 @@
         <div class="card">
             <h3 class="card-header text-center"><span class="fa-solid fa-wrench"></span> Profile Settings</h3>
             <div class="card-body">
-                <form asp-controller="User" asp-action="ChangeDetails" method="post" id="user-update-form">
+                <form asp-controller="User" asp-action="ChangeDetails" method="post">
                     <div asp-validation-summary="All" id="validation-summary" class="text-danger"></div>
                     <input type="hidden" asp-for="Id" aria-hidden="true">
                     <div class="form-group">

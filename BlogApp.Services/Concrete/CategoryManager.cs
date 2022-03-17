@@ -7,6 +7,7 @@ using BlogApp.Data.Abstract;
 using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Dtos.CategoryDtos;
 using BlogApp.Services.Abstract;
+using BlogApp.Services.Utilities;
 using BlogApp.Shared.Utilities.Results.Abstract;
 using BlogApp.Shared.Utilities.Results.ComplexTypes;
 using BlogApp.Shared.Utilities.Results.Concrete;
@@ -33,10 +34,10 @@ namespace BlogApp.Services.Concrete
             var addingCategory =  await _unitOfWork.Categories.AddAsync(category);
             await _unitOfWork.SaveAsync();
 
-            return new DataResult<CategoryDto>(ResultStatus.Success,$"{category.Name} has successfully been added.",new CategoryDto(){
+            return new DataResult<CategoryDto>(ResultStatus.Success,Messages.Category.Add(category.Name),new CategoryDto(){
                 ResultStatus = ResultStatus.Success,
                 Category= addingCategory,
-                Message = $"{category.Name} has successfully been added."
+                Message = Messages.Category.Add(category.Name)
             });
         }
 
@@ -52,16 +53,16 @@ namespace BlogApp.Services.Concrete
                 await _unitOfWork.Categories.UpdateAsync(category);
                 await _unitOfWork.SaveAsync();
 
-                return new DataResult<CategoryDto>(ResultStatus.Success,$"{category.Name} has successfully been deleted.",new CategoryDto(){
+                return new DataResult<CategoryDto>(ResultStatus.Success,Messages.Category.Delete(category.Name),new CategoryDto(){
                     ResultStatus = ResultStatus.Success,
-                    Message = $"{category.Name} has successfully been deleted.",
+                    Message = Messages.Category.Delete(category.Name),
                     Category = category
                 });
             }
             
-            return new DataResult<CategoryDto>(ResultStatus.Error,"Category not found.",new CategoryDto(){
+            return new DataResult<CategoryDto>(ResultStatus.Error,Messages.Category.NotFound(isPlural:false),new CategoryDto(){
                 ResultStatus = ResultStatus.Error,
-                Message = "Category not found.",
+                Message = Messages.Category.NotFound(isPlural:false),
                 Category = null
             });
         }
@@ -71,15 +72,15 @@ namespace BlogApp.Services.Concrete
             var categories = await _unitOfWork.Categories.GetAllAsync(null, c => c.Articles);
 
             if(categories.Count() >= 0){
-                return new DataResult<CategoryListDto>(ResultStatus.Success,"Categories has successfully been brought.",new CategoryListDto(){
+                return new DataResult<CategoryListDto>(ResultStatus.Success,Messages.Category.Get(isPlural:true),new CategoryListDto(){
                     ResultStatus = ResultStatus.Success,
-                    Message = "Categories has successfully been brought.",
+                    Message = Messages.Category.Get(isPlural:true),
                     Categories = categories
                 });
             }
-            return new DataResult<CategoryListDto>(ResultStatus.Error,"No categories found.",new CategoryListDto(){
+            return new DataResult<CategoryListDto>(ResultStatus.Error,Messages.Category.NotFound(isPlural:true),new CategoryListDto(){
                 ResultStatus = ResultStatus.Error, 
-                Message = "No categories found.",
+                Message = Messages.Category.NotFound(isPlural:true),
                 Categories = null
             });
         }
@@ -89,15 +90,15 @@ namespace BlogApp.Services.Concrete
             var categories = await _unitOfWork.Categories.GetAllAsync(c => !c.IsDeleted, c => c.Articles);
 
             if(categories.Count() >= 0){
-                return new DataResult<CategoryListDto>(ResultStatus.Success,"Categories has successfully been brought.",new CategoryListDto(){
+                return new DataResult<CategoryListDto>(ResultStatus.Success,Messages.Category.Get(isPlural:true),new CategoryListDto(){
                     ResultStatus = ResultStatus.Success, 
-                    Message = "Categories has successfully been brought.",
+                    Message = Messages.Category.Get(isPlural:true),
                     Categories = categories
                 });
             }
-            return new DataResult<CategoryListDto>(ResultStatus.Error,"No categories found.",new CategoryListDto(){
+            return new DataResult<CategoryListDto>(ResultStatus.Error,Messages.Category.NotFound(isPlural:true),new CategoryListDto(){
                 ResultStatus = ResultStatus.Error, 
-                Message = "No categories found.",
+                Message = Messages.Category.NotFound(isPlural:true),
                 Categories = null
             });
         }
@@ -106,16 +107,16 @@ namespace BlogApp.Services.Concrete
             var categories = await _unitOfWork.Categories.GetAllAsync(c => !c.IsDeleted && c.IsActive, c => c.Articles);
 
             if(categories.Count >= 0){
-                return new DataResult<CategoryListDto>(ResultStatus.Success,"Categories has successfullt been brought.",new CategoryListDto(){
+                return new DataResult<CategoryListDto>(ResultStatus.Success,Messages.Category.Get(isPlural:true),new CategoryListDto(){
                     ResultStatus = ResultStatus.Success, 
-                    Message = "Categories has successfullt been brought.",
+                    Message = Messages.Category.Get(isPlural:true),
                     Categories = categories
                 });
             }
 
-            return new DataResult<CategoryListDto>(ResultStatus.Error,"No categories found.",new CategoryListDto(){
+            return new DataResult<CategoryListDto>(ResultStatus.Error,Messages.Category.NotFound(isPlural:true),new CategoryListDto(){
                 ResultStatus = ResultStatus.Error, 
-                Message = "No categories found.",
+                Message = Messages.Category.NotFound(isPlural:true),
                 Categories = null
             });
         }
@@ -125,16 +126,16 @@ namespace BlogApp.Services.Concrete
             var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId);
 
             if(category != null){
-                return new DataResult<CategoryDto>(ResultStatus.Success,$"{category.Name} has successfully been brought.",new CategoryDto(){
+                return new DataResult<CategoryDto>(ResultStatus.Success,Messages.Category.Get(isPlural:false,category.Name),new CategoryDto(){
                     ResultStatus = ResultStatus.Success, 
-                    Message = $"{category.Name} has successfully been brought.",
+                    Message = Messages.Category.Get(isPlural:false,category.Name),
                     Category = category
                 });
             }
 
-            return new DataResult<CategoryDto>(ResultStatus.Error,"Category not found.", new CategoryDto(){
+            return new DataResult<CategoryDto>(ResultStatus.Error,Messages.Category.NotFound(isPlural:false), new CategoryDto(){
                 ResultStatus = ResultStatus.Error, 
-                Message = "Category not found.",
+                Message = Messages.Category.NotFound(isPlural:false),
                 Category = null
             });
         }
@@ -144,9 +145,9 @@ namespace BlogApp.Services.Concrete
             
             if(category != null){
                 var categoryUpdateDto = _mapper.Map<CategoryUpdateDto>(category);
-                return new DataResult<CategoryUpdateDto>(ResultStatus.Success,$"{category.Name} has successfully been updated.",categoryUpdateDto);
+                return new DataResult<CategoryUpdateDto>(ResultStatus.Success,Messages.Category.Update(category.Name),categoryUpdateDto);
             }
-            return new DataResult<CategoryUpdateDto>(ResultStatus.Error,$"Category not found.",null);
+            return new DataResult<CategoryUpdateDto>(ResultStatus.Error,Messages.Category.NotFound(isPlural:false),null);
         }
 
         public async Task<IResult> HardDelete(int categoryId)
@@ -157,10 +158,10 @@ namespace BlogApp.Services.Concrete
                  await _unitOfWork.Categories.DeleteAsync(category);
                  await _unitOfWork.SaveAsync();
 
-                 return new Result(ResultStatus.Success,$"{category.Name} has successfully been deleted from database.");
+                 return new Result(ResultStatus.Success,Messages.Category.HardDelete(category.Name));
              }
 
-             return new Result(ResultStatus.Error,"Category not found.");
+             return new Result(ResultStatus.Error,Messages.Category.NotFound(isPlural:false));
         }
 
         public async Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto categoryUpdateDto, string modifiedName)
@@ -174,16 +175,16 @@ namespace BlogApp.Services.Concrete
                 var updatingCategory = await _unitOfWork.Categories.UpdateAsync(category);
                 await _unitOfWork.SaveAsync();
 
-                return new DataResult<CategoryDto>(ResultStatus.Success,$"{category.Name} has successfully been updated.",new CategoryDto(){
+                return new DataResult<CategoryDto>(ResultStatus.Success,Messages.Category.Update(category.Name),new CategoryDto(){
                     ResultStatus = ResultStatus.Success, 
-                    Message = $"{category.Name} has successfully been updated.",
+                    Message = Messages.Category.Update(category.Name),
                     Category = updatingCategory
                 });
             }
             
-            return new DataResult<CategoryDto>(ResultStatus.Success,"Category not found.",new CategoryDto(){
+            return new DataResult<CategoryDto>(ResultStatus.Success,Messages.Category.NotFound(isPlural:false),new CategoryDto(){
                 ResultStatus = ResultStatus.Success, 
-                Message = "Category not found.",
+                Message = Messages.Category.NotFound(isPlural:false),
                 Category = null
             });
         }
