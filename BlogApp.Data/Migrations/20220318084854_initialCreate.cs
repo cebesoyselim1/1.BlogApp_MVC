@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BlogApp.Data.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class initialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -61,8 +61,8 @@ namespace BlogApp.Data.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ModifiedName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CreatedByName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ModifiedByName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
@@ -187,7 +187,7 @@ namespace BlogApp.Data.Migrations
                     Thumbnail = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ViewCount = table.Column<int>(type: "int", nullable: false),
-                    CommentCont = table.Column<int>(type: "int", nullable: false),
+                    CommentCount = table.Column<int>(type: "int", nullable: false),
                     SeoAuthor = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     SeoDescription = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     SeoTags = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
@@ -197,8 +197,8 @@ namespace BlogApp.Data.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ModifiedName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CreatedByName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ModifiedByName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
@@ -230,8 +230,8 @@ namespace BlogApp.Data.Migrations
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ModifiedName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CreatedByName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ModifiedByName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
@@ -250,8 +250,8 @@ namespace BlogApp.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "ce5dc399-38ed-4439-906d-db9d0836c5b8", "Admin", "ADMIN" },
-                    { 2, "d698ae08-0a9d-4a71-9723-181c7d7679b7", "Editor", "EDITOR" }
+                    { 1, "ad775550-6ebc-4109-bb35-3a6fec23bff9", "Admin", "ADMIN" },
+                    { 2, "222dd480-4389-43c6-a744-6aaddef3de01", "Editor", "EDITOR" }
                 });
 
             migrationBuilder.InsertData(
@@ -259,18 +259,18 @@ namespace BlogApp.Data.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "8eed07eb-e481-4cb9-8fe9-b12ae77af3b5", "adimnuser@blogapp.com", true, false, null, "ADMINUSER@BLOGAPP.COM", "ADMINUSER", "AQAAAAEAACcQAAAAEIclHkTE2T9+ryk7bge2UtCqA4lKUpx47h0lvAkWLiYRF34TkWvMgSZZmgQN203mSg==", "+905555555555", true, "defaultUser.png", "02f48cd6-414e-4f70-a1c8-f598210f7a09", false, "adminuser" },
-                    { 2, 0, "8cc2174d-e78f-4550-932b-6523e3afe05c", "editoruser@blogapp.com", true, false, null, "EDITORUSER@BLOGAPP.COM", "EDITORUSER", "AQAAAAEAACcQAAAAEGxdL7v2WVKLnLCZPHe2wOeZgSmXPPx19ZpE9+fl+78dEvKvWE6xKr/nu1eYDv4xOA==", "+904444444444", true, "defaultUser.png", "22441db6-4d6b-4961-8ef8-179da42a1829", false, "editoruser" }
+                    { 1, 0, "b26d1a84-fa62-49c1-ad7e-f1a717972e5b", "adimnuser@blogapp.com", true, false, null, "ADMINUSER@BLOGAPP.COM", "ADMINUSER", "AQAAAAEAACcQAAAAEJDc/rOTzuP99utwDH54lOpD82DoP41QsMQGXzm7Hx8ntM/VpB337bCdo2S9vYG9+g==", "+905555555555", true, "defaultUser.png", "da01d38a-ba3d-4e7b-813e-f170e4b4f151", false, "adminuser" },
+                    { 2, 0, "584a46a1-b878-4710-aa2e-c310cc877183", "editoruser@blogapp.com", true, false, null, "EDITORUSER@BLOGAPP.COM", "EDITORUSER", "AQAAAAEAACcQAAAAEOWZLEiqXNp/uQefYDJqkD9t9Bs7oyZN/8FWCN6dV/zka7WsfiKEVdnm+S2s5Hm0yg==", "+904444444444", true, "defaultUser.png", "e39d0695-a283-41bf-8678-aa114a9e835f", false, "editoruser" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "Id", "CreatedDate", "CreatedName", "Description", "IsActive", "IsDeleted", "ModifiedDate", "ModifiedName", "Name", "Note" },
+                columns: new[] { "Id", "CreatedByName", "CreatedDate", "Description", "IsActive", "IsDeleted", "ModifiedByName", "ModifiedDate", "Name", "Note" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(958), "InitialCreate", "Everthing about C# programming language", true, false, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(1252), "InitialCreate", "C#", "C# Programming Language" },
-                    { 2, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2637), "InitialCreate", "Everthing about C++ programming language", true, false, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2638), "InitialCreate", "C++", "C++ Programming Language" },
-                    { 3, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2642), "InitialCreate", "Everthing about Javascript programming language", true, false, new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2643), "InitialCreate", "Javascript", "Javascript Programming Language" }
+                    { 1, "InitialCreate", new DateTime(2022, 3, 18, 11, 48, 54, 164, DateTimeKind.Local).AddTicks(6987), "Everthing about C# programming language", true, false, "InitialCreate", new DateTime(2022, 3, 18, 11, 48, 54, 164, DateTimeKind.Local).AddTicks(7266), "C#", "C# Programming Language" },
+                    { 2, "InitialCreate", new DateTime(2022, 3, 18, 11, 48, 54, 164, DateTimeKind.Local).AddTicks(8591), "Everthing about C++ programming language", true, false, "InitialCreate", new DateTime(2022, 3, 18, 11, 48, 54, 164, DateTimeKind.Local).AddTicks(8592), "C++", "C++ Programming Language" },
+                    { 3, "InitialCreate", new DateTime(2022, 3, 18, 11, 48, 54, 164, DateTimeKind.Local).AddTicks(8597), "Everthing about Javascript programming language", true, false, "InitialCreate", new DateTime(2022, 3, 18, 11, 48, 54, 164, DateTimeKind.Local).AddTicks(8598), "Javascript", "Javascript Programming Language" }
                 });
 
             migrationBuilder.InsertData(

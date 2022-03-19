@@ -26,11 +26,11 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             
             builder.Property(c => c.IsDeleted).IsRequired();
 
-            builder.Property(c => c.CreatedName).IsRequired();
-            builder.Property(c => c.CreatedName).HasMaxLength(100);
+            builder.Property(c => c.CreatedByName).IsRequired();
+            builder.Property(c => c.CreatedByName).HasMaxLength(100);
 
-            builder.Property(c => c.ModifiedName).IsRequired();
-            builder.Property(c => c.ModifiedName).HasMaxLength(100);
+            builder.Property(c => c.ModifiedByName).IsRequired();
+            builder.Property(c => c.ModifiedByName).HasMaxLength(100);
 
             builder.Property(c => c.Note).HasMaxLength(500);
 

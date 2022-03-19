@@ -8,14 +8,15 @@ using BlogApp.Data.Concrete.EntityFramework.Contexts;
 using BlogApp.Entities.Concrete;
 using BlogApp.Services.Abstract;
 using BlogApp.Services.Concrete;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlogApp.Services.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection LoadMyServices(this IServiceCollection serviceCollection){
-            serviceCollection.AddDbContext<BlogContext>();
+        public static IServiceCollection LoadMyServices(this IServiceCollection serviceCollection, string connectionString){
+            serviceCollection.AddDbContext<BlogContext>(options => options.UseSqlServer(connectionString));
             serviceCollection.AddIdentity<User,Role>(options => {
                 //Password Options
                 options.Password.RequireDigit = false;
@@ -31,6 +32,7 @@ namespace BlogApp.Services.Extensions
             serviceCollection.AddScoped<IUnitOfWork,UnitOfWork>();
             serviceCollection.AddScoped<ICategoryService,CategoryManager>();
             serviceCollection.AddScoped<IArticleService,ArticleManager>();
+            serviceCollection.AddScoped<ICommentService,CommentManager>();
 
             return serviceCollection;
         }

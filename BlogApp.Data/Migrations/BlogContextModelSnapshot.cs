@@ -29,20 +29,20 @@ namespace BlogApp.Data.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CommentCont")
+                    b.Property<int>("CommentCount")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("NVARCHAR(MAX)");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedName")
+                    b.Property<string>("CreatedByName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -53,13 +53,13 @@ namespace BlogApp.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifiedName")
+                    b.Property<string>("ModifiedByName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
                         .HasMaxLength(500)
@@ -112,13 +112,13 @@ namespace BlogApp.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedName")
+                    b.Property<string>("CreatedByName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
@@ -130,13 +130,13 @@ namespace BlogApp.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifiedName")
+                    b.Property<string>("ModifiedByName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -155,39 +155,39 @@ namespace BlogApp.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(958),
-                            CreatedName = "InitialCreate",
+                            CreatedByName = "InitialCreate",
+                            CreatedDate = new DateTime(2022, 3, 18, 11, 53, 7, 408, DateTimeKind.Local).AddTicks(7023),
                             Description = "Everthing about C# programming language",
                             IsActive = true,
                             IsDeleted = false,
-                            ModifiedDate = new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(1252),
-                            ModifiedName = "InitialCreate",
+                            ModifiedByName = "InitialCreate",
+                            ModifiedDate = new DateTime(2022, 3, 18, 11, 53, 7, 408, DateTimeKind.Local).AddTicks(7337),
                             Name = "C#",
                             Note = "C# Programming Language"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2637),
-                            CreatedName = "InitialCreate",
+                            CreatedByName = "InitialCreate",
+                            CreatedDate = new DateTime(2022, 3, 18, 11, 53, 7, 408, DateTimeKind.Local).AddTicks(8740),
                             Description = "Everthing about C++ programming language",
                             IsActive = true,
                             IsDeleted = false,
-                            ModifiedDate = new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2638),
-                            ModifiedName = "InitialCreate",
+                            ModifiedByName = "InitialCreate",
+                            ModifiedDate = new DateTime(2022, 3, 18, 11, 53, 7, 408, DateTimeKind.Local).AddTicks(8741),
                             Name = "C++",
                             Note = "C++ Programming Language"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedDate = new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2642),
-                            CreatedName = "InitialCreate",
+                            CreatedByName = "InitialCreate",
+                            CreatedDate = new DateTime(2022, 3, 18, 11, 53, 7, 408, DateTimeKind.Local).AddTicks(8746),
                             Description = "Everthing about Javascript programming language",
                             IsActive = true,
                             IsDeleted = false,
-                            ModifiedDate = new DateTime(2022, 3, 17, 16, 47, 53, 588, DateTimeKind.Local).AddTicks(2643),
-                            ModifiedName = "InitialCreate",
+                            ModifiedByName = "InitialCreate",
+                            ModifiedDate = new DateTime(2022, 3, 18, 11, 53, 7, 408, DateTimeKind.Local).AddTicks(8747),
                             Name = "Javascript",
                             Note = "Javascript Programming Language"
                         });
@@ -203,13 +203,13 @@ namespace BlogApp.Data.Migrations
                     b.Property<int>("ArticleId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedName")
+                    b.Property<string>("CreatedByName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -217,13 +217,13 @@ namespace BlogApp.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifiedName")
+                    b.Property<string>("ModifiedByName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Note")
                         .HasMaxLength(500)
@@ -273,14 +273,14 @@ namespace BlogApp.Data.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "ce5dc399-38ed-4439-906d-db9d0836c5b8",
+                            ConcurrencyStamp = "8a27685c-875a-4b43-9353-42d2cc634bdb",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "d698ae08-0a9d-4a71-9723-181c7d7679b7",
+                            ConcurrencyStamp = "8f21f85d-f647-42af-a6fa-dd15f410ee1e",
                             Name = "Editor",
                             NormalizedName = "EDITOR"
                         });
@@ -385,17 +385,17 @@ namespace BlogApp.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8eed07eb-e481-4cb9-8fe9-b12ae77af3b5",
+                            ConcurrencyStamp = "3671ad5f-2cc4-4e43-bcc1-92326074e4ea",
                             Email = "adimnuser@blogapp.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMINUSER@BLOGAPP.COM",
                             NormalizedUserName = "ADMINUSER",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIclHkTE2T9+ryk7bge2UtCqA4lKUpx47h0lvAkWLiYRF34TkWvMgSZZmgQN203mSg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJBZ5gs+QO+Uq9Lh9AFqZwaJaJM1ImFDpyXL+7QuTo7bWEknhaTLM1AkJ+xtt9l/WQ==",
                             PhoneNumber = "+905555555555",
                             PhoneNumberConfirmed = true,
                             Picture = "defaultUser.png",
-                            SecurityStamp = "02f48cd6-414e-4f70-a1c8-f598210f7a09",
+                            SecurityStamp = "e2841d2a-28e1-45ae-803d-c5a955cac532",
                             TwoFactorEnabled = false,
                             UserName = "adminuser"
                         },
@@ -403,17 +403,17 @@ namespace BlogApp.Data.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8cc2174d-e78f-4550-932b-6523e3afe05c",
+                            ConcurrencyStamp = "6ea773e0-b4c6-4bb3-9a66-f9b26b06efe5",
                             Email = "editoruser@blogapp.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "EDITORUSER@BLOGAPP.COM",
                             NormalizedUserName = "EDITORUSER",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGxdL7v2WVKLnLCZPHe2wOeZgSmXPPx19ZpE9+fl+78dEvKvWE6xKr/nu1eYDv4xOA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHPhohkKUNarRHYR2ZIYglRhNXuh4pJgycq08mK/I0lUErrLKoZDV0fNN02Y1+OMLg==",
                             PhoneNumber = "+904444444444",
                             PhoneNumberConfirmed = true,
                             Picture = "defaultUser.png",
-                            SecurityStamp = "22441db6-4d6b-4961-8ef8-179da42a1829",
+                            SecurityStamp = "bbaa107e-ae72-47fe-8a92-a53e079638ed",
                             TwoFactorEnabled = false,
                             UserName = "editoruser"
                         });

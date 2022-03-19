@@ -1,6 +1,11 @@
 @using BlogApp.Shared.Utilities.Results.ComplexTypes
 @model BlogApp.Entities.Dtos.CategoryDtos.CategoryListDto
 
+<ol class="breadcrumb mb-4 mt-2">
+    <li class="breadcrumb-item"> <a asp-area="Admin" asp-controller="Category" asp-action="Index">Admin</a> </li>
+    <li class="breadcrumb-item active"> <a asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a> </li>
+</ol>
+
 @if(Model.ResultStatus == ResultStatus.Success){
     <div id="modalPlaceHolder" aria-hidden="true"></div>
     <div class="card mt-2">
@@ -57,9 +62,9 @@
                                 <td>@category.IsActive</td>
                                 <td>@category.IsDeleted</td>
                                 <td>@category.Note</td>
-                                <td>@category.CreatedName</td>
+                                <td>@category.CreatedByName</td>
                                 <td>@category.CreatedDate.ToShortDateString()</td>
-                                <td>@category.ModifiedName</td>
+                                <td>@category.ModifiedByName</td>
                                 <td>@category.ModifiedDate.ToShortDateString()</td>
                                 <td>
                                     <button class="btn btn-warning btn-update btn-block" data-id="@category.Id"><span class="fa-solid fa-pen-to-square"></span></button>

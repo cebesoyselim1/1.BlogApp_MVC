@@ -24,12 +24,12 @@ namespace BlogApp.Services.Concrete
             _mapper = mapper;
         }
 
-        public async Task<IDataResult<CategoryDto>> Add(CategoryAddDto categoryAddDto, string createdName)
+        public async Task<IDataResult<CategoryDto>> Add(CategoryAddDto categoryAddDto, string createdByName)
         {
             var category = _mapper.Map<Category>(categoryAddDto);
             
-            category.CreatedName = createdName;
-            category.ModifiedName = createdName;
+            category.CreatedByName = createdByName;
+            category.ModifiedByName = createdByName;
 
             var addingCategory =  await _unitOfWork.Categories.AddAsync(category);
             await _unitOfWork.SaveAsync();
@@ -41,12 +41,12 @@ namespace BlogApp.Services.Concrete
             });
         }
 
-        public async Task<IDataResult<CategoryDto>> Delete(int categoryId, string modifiedName)
+        public async Task<IDataResult<CategoryDto>> Delete(int categoryId, string modifiedByName)
         {
             var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId);
 
             if(category != null){
-                category.ModifiedName = modifiedName;
+                category.ModifiedByName = modifiedByName;
                 category.ModifiedDate = DateTime.Now;
                 category.IsDeleted = true;
 
@@ -164,13 +164,13 @@ namespace BlogApp.Services.Concrete
              return new Result(ResultStatus.Error,Messages.Category.NotFound(isPlural:false));
         }
 
-        public async Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto categoryUpdateDto, string modifiedName)
+        public async Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto categoryUpdateDto, string modifiedByName)
         {
             var oldCategory = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryUpdateDto.Id);
             var category = _mapper.Map<CategoryUpdateDto,Category>(categoryUpdateDto,oldCategory);
 
             if(category != null){
-                category.ModifiedName = modifiedName;
+                category.ModifiedByName = modifiedByName;
                 
                 var updatingCategory = await _unitOfWork.Categories.UpdateAsync(category);
                 await _unitOfWork.SaveAsync();
@@ -187,6 +187,26 @@ namespace BlogApp.Services.Concrete
                 Message = Messages.Category.NotFound(isPlural:false),
                 Category = null
             });
+        }
+
+        public async Task<IDataResult<int>> Count(){
+            var categoriesCount = await _unitOfWork.Categories.CountAsync();
+
+            if(categoriesCount > -1){
+                return new DataResult<int>(ResultStatus.Success,Messages.Category.Count(categoriesCount),categoriesCount);
+            }
+
+            return new DataResult<int>(ResultStatus.Error,Messages.Category.NotFound(isPlural:true),-1);
+        }
+        
+        public async Task<IDataResult<int>> CountByNonDeleted(){
+            var categoriesCount = await _unitOfWork.Categories.CountAsync(c => !c.IsDeleted);
+
+            if(categoriesCount > -1){
+                return new DataResult<int>(ResultStatus.Success,Messages.Category.Count(categoriesCount),categoriesCount);
+            }
+
+            return new DataResult<int>(ResultStatus.Error,Messages.Category.NotFound(isPlural:true),-1);
         }
     }
 }

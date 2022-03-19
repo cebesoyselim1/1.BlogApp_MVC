@@ -19,6 +19,6 @@ namespace BlogApp.Shared.Data.Abstact
         Task<TEntity> UpdateAsync(TEntity entity);
         Task DeleteAsync(TEntity entity);
         Task<bool> AnyAsync(Expression<Func<TEntity,bool>> predicate);
-        Task<int> CountAsync(Expression<Func<TEntity,bool>> preidcate);
+        Task<int> CountAsync(Expression<Func<TEntity,bool>> predicate = null);
     }
 }

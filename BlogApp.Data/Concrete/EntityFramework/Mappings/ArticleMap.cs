@@ -36,7 +36,7 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
 
             builder.Property(a => a.ViewCount).IsRequired();
 
-            builder.Property(a => a.CommentCont).IsRequired();
+            builder.Property(a => a.CommentCount).IsRequired();
 
             builder.Property(a => a.Thumbnail).IsRequired();
             builder.Property(a => a.Thumbnail).HasMaxLength(250);
@@ -49,11 +49,11 @@ namespace BlogApp.Data.Concrete.EntityFramework.Mappings
             
             builder.Property(a => a.IsDeleted).IsRequired();
 
-            builder.Property(a => a.CreatedName).IsRequired();
-            builder.Property(a => a.CreatedName).HasMaxLength(100);
+            builder.Property(a => a.CreatedByName).IsRequired();
+            builder.Property(a => a.CreatedByName).HasMaxLength(100);
 
-            builder.Property(a => a.ModifiedName).IsRequired();
-            builder.Property(a => a.ModifiedName).HasMaxLength(100);
+            builder.Property(a => a.ModifiedByName).IsRequired();
+            builder.Property(a => a.ModifiedByName).HasMaxLength(100);
 
             builder.Property(a => a.Note).HasMaxLength(500);
 

@@ -28,12 +28,19 @@ namespace BlogApp.Services.Utilities
             public static string HardDelete(string categoryName){
                 return $"{categoryName} has successfully been deleted from database.";
             }
+            public static string Count(int categoryCount){
+                return $"{categoryCount} categories has successfully been brought.";
+            }
         }
 
         public static class Article{
             public static string NotFound(bool isPlural){
                 if(isPlural) return "No articles found.";
                 return "Article not found.";
+            }
+            public static string Get(bool isPlural, string articleName = null){
+                if(isPlural) return "Articles has successfully been brought.";
+                else return $"{articleName} has successfully been brought.";
             }
             public static string Add(string articleName){
                 return $"{articleName} has successfully been added.";
@@ -46,6 +53,35 @@ namespace BlogApp.Services.Utilities
             }
             public static string HardDelete(string articleName){
                 return $"{articleName} has successfully been deleted from database.";
+            }
+            public static string Count(int articleCount){
+                return $"{articleCount} articles has successfully been brought.";
+            }
+        }
+
+        public static class Comment{
+            public static string NotFound(bool isPlural){
+                if(isPlural) return "No comments found.";
+                return "Comment not found.";
+            }
+            public static string Get(bool isPlural, string commentName = null){
+                if(isPlural) return "Comments has successfully been brought.";
+                else return $"{commentName} has successfully been brought.";
+            }
+            public static string Add(string commentName){
+                return $"{commentName} has successfully been added.";
+            }
+            public static string Update(string commentName){
+                return $"{commentName} has successfully been updated.";
+            }
+            public static string Delete(string commentName){
+                return $"{commentName} has succssfully been deleted.";
+            }
+            public static string HardDelete(string commentName){
+                return $"{commentName} has successfully been deleted from database.";
+            }
+            public static string Count(int commentCount){
+                return $"{commentCount} comments has successfully been brought.";
             }
         }
     }

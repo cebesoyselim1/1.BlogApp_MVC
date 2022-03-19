@@ -30,9 +30,12 @@ namespace BlogApp.Shared.Data.Concrete.EntityFramework
             return await _context.Set<TEntity>().AnyAsync(predicate);
         }
 
-        public async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate)
+        public async Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate = null)
         {
-            return await _context.Set<TEntity>().CountAsync(predicate);
+            if(predicate != null){
+                return await _context.Set<TEntity>().CountAsync(predicate);
+            }
+            return await _context.Set<TEntity>().CountAsync();
         }
 
         public async Task DeleteAsync(TEntity entity)

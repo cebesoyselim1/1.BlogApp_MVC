@@ -1,6 +1,11 @@
 @using BlogApp.Shared.Utilities.Results.ComplexTypes
 @model BlogApp.Entities.Dtos.UserDtos.UserListDto
 
+<ol class="breadcrumb mb-4 mt-2">
+    <li class="breadcrumb-item"> <a asp-area="Admin" asp-controller="User" asp-action="Index">Admin</a> </li>
+    <li class="breadcrumb-item active"> <a asp-area="Admin" asp-controller="User" asp-action="Index">User</a> </li>
+</ol>
+
 @if(Model.ResultStatus == ResultStatus.Success){
     <div id="modalPlaceHolder" aria-hidden="true"></div>
     <div class="card mt-2">

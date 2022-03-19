@@ -19,5 +19,7 @@ namespace BlogApp.Services.Abstract
         Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto c, string modifiedName);
         Task<IDataResult<CategoryDto>> Delete(int categoryId, string modifiedName);
         Task<IResult> HardDelete(int categoryId);
+        public Task<IDataResult<int>> Count();
+        public Task<IDataResult<int>> CountByNonDeleted();
     }
 }
