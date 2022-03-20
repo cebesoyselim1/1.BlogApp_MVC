@@ -9,6 +9,7 @@
         <meta name="author" content="" />
         <title>@ViewBag.Title</title>
         @await Html.PartialAsync("_LayoutCssPartial")
+        @await RenderSectionAsync("Styles",false);
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">

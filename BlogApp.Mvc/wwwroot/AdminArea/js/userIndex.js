@@ -122,8 +122,9 @@ $(document).ready( function () {
         $(document).on("click",".btn-delete",function(e){
             e.preventDefault();
             var userId = $(this).attr("data-id");
-            var tableRow = $("#usersTable").find(`[data-id="user-row-${userId}"]`);
-            var userName = tableRow.find("td:eq(1)").val();
+            var tableRow = $(`[data-id="user-row-${userId}"]`);
+            var userName = tableRow.find("td:eq(1)").text()
+
             Swal.fire({
                 title: 'Are you sure that you want to delete?',
                 text: `${userName} will be deleted!`,

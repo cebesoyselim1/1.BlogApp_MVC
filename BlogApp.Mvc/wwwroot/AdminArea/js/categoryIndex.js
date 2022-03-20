@@ -35,12 +35,12 @@ $(document).ready( function () {
                                             <td>${category.Id}</td>
                                             <td>${category.Name}</td>
                                             <td>${category.Description}</td>
-                                            <td>${ConvertFirstLetterToUpperCase(category.IsActive.toString())}</td>
-                                            <td>${ConvertFirstLetterToUpperCase(category.IsDeleted.toString())}</td>
+                                            <td>${category.IsActive ? "Yes" : "No"}</td>
+                                            <td>${category.IsDeleted ? "Yes" : "No"}</td>
                                             <td>${category.Note}</td>
-                                            <td>${category.CreatedName}</td>
+                                            <td>${category.CreatedByName}</td>
                                             <td>${ConvertToShortDate(category.CreatedDate)}</td>
-                                            <td>${category.ModifiedName}</td>
+                                            <td>${category.ModifiedByName}</td>
                                             <td>${ConvertToShortDate(category.ModifiedDate)}</td>
                                             <td>
                                                 <button class="btn btn-warning btn-block" data-id="${category.id}"><span class="fa-solid fa-pen-to-square"></span></button>
@@ -100,8 +100,8 @@ $(document).ready( function () {
                         <td>${categoryAddAjaxViewModel.CategoryDto.Category.Id}</td>
                         <td>${categoryAddAjaxViewModel.CategoryDto.Category.Name}</td>
                         <td>${categoryAddAjaxViewModel.CategoryDto.Category.Description}</td>
-                        <td>${ConvertFirstLetterToUpperCase(categoryAddAjaxViewModel.CategoryDto.Category.IsActive.toString())}</td>
-                        <td>${ConvertFirstLetterToUpperCase(categoryAddAjaxViewModel.CategoryDto.Category.IsDeleted.toString())}</td>
+                        <td>${categoryAddAjaxViewModel.CategoryDto.Category.IsActive ? "Yes" : "No"}</td>
+                        <td>${categoryAddAjaxViewModel.CategoryDto.Category.IsDeleted ? "Yes" : "No"}</td>
                         <td>${categoryAddAjaxViewModel.CategoryDto.Category.Note}</td>
                         <td>${categoryAddAjaxViewModel.CategoryDto.Category.CreatedName}</td>
                         <td>${ConvertToShortDate(categoryAddAjaxViewModel.CategoryDto.Category.CreatedDate)}</td>
@@ -212,8 +212,8 @@ $(document).ready( function () {
                         <td>${categoryUpdateAjaxViewModel.CategoryDto.Category.Id}</td>
                         <td>${categoryUpdateAjaxViewModel.CategoryDto.Category.Name}</td>
                         <td>${categoryUpdateAjaxViewModel.CategoryDto.Category.Description}</td>
-                        <td>${ConvertFirstLetterToUpperCase(categoryUpdateAjaxViewModel.CategoryDto.Category.IsActive.toString())}</td>
-                        <td>${ConvertFirstLetterToUpperCase(categoryUpdateAjaxViewModel.CategoryDto.Category.IsDeleted.toString())}</td>
+                        <td>${categoryUpdateAjaxViewModel.CategoryDto.Category.IsActive ? "Yes" : "No"}</td>
+                        <td>${categoryUpdateAjaxViewModel.CategoryDto.Category.IsDeleted ? "Yes" : "No"}</td>
                         <td>${categoryUpdateAjaxViewModel.CategoryDto.Category.Note}</td>
                         <td>${categoryUpdateAjaxViewModel.CategoryDto.Category.CreatedName}</td>
                         <td>${ConvertToShortDate(categoryUpdateAjaxViewModel.CategoryDto.Category.CreatedDate)}</td>

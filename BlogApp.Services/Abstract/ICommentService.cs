@@ -8,7 +8,7 @@ namespace BlogApp.Services.Abstract
 {
     public interface ICommentService
     {
-        public Task<IDataResult<int>> Count();
-        public Task<IDataResult<int>> CountByNonDeleted();
+        public Task<IDataResult<int>> CountAsync();
+        public Task<IDataResult<int>> CountByNonDeletedAsync();
     }
 }

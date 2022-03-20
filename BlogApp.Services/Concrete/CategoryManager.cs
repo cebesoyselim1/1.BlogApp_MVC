@@ -24,7 +24,7 @@ namespace BlogApp.Services.Concrete
             _mapper = mapper;
         }
 
-        public async Task<IDataResult<CategoryDto>> Add(CategoryAddDto categoryAddDto, string createdByName)
+        public async Task<IDataResult<CategoryDto>> AddAsync(CategoryAddDto categoryAddDto, string createdByName)
         {
             var category = _mapper.Map<Category>(categoryAddDto);
             
@@ -41,7 +41,7 @@ namespace BlogApp.Services.Concrete
             });
         }
 
-        public async Task<IDataResult<CategoryDto>> Delete(int categoryId, string modifiedByName)
+        public async Task<IDataResult<CategoryDto>> DeleteAsync(int categoryId, string modifiedByName)
         {
             var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId);
 
@@ -67,7 +67,7 @@ namespace BlogApp.Services.Concrete
             });
         }
 
-        public async Task<IDataResult<CategoryListDto>> GetAll()
+        public async Task<IDataResult<CategoryListDto>> GetAllAsync()
         {
             var categories = await _unitOfWork.Categories.GetAllAsync(null, c => c.Articles);
 
@@ -85,7 +85,7 @@ namespace BlogApp.Services.Concrete
             });
         }
 
-        public async Task<IDataResult<CategoryListDto>> GetAllNonDeleted()
+        public async Task<IDataResult<CategoryListDto>> GetAllNonDeletedAsync()
         {
             var categories = await _unitOfWork.Categories.GetAllAsync(c => !c.IsDeleted, c => c.Articles);
 
@@ -103,7 +103,7 @@ namespace BlogApp.Services.Concrete
             });
         }
 
-        public async Task<IDataResult<CategoryListDto>> GetAllNonDeletedAndActive(){
+        public async Task<IDataResult<CategoryListDto>> GetAllNonDeletedAndActiveAsync(){
             var categories = await _unitOfWork.Categories.GetAllAsync(c => !c.IsDeleted && c.IsActive, c => c.Articles);
 
             if(categories.Count >= 0){
@@ -121,7 +121,7 @@ namespace BlogApp.Services.Concrete
             });
         }
 
-        public async Task<IDataResult<CategoryDto>> Get(int categoryId)
+        public async Task<IDataResult<CategoryDto>> GetAsync(int categoryId)
         {  
             var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId);
 
@@ -140,7 +140,12 @@ namespace BlogApp.Services.Concrete
             });
         }
 
-        public async Task<IDataResult<CategoryUpdateDto>> GetUpdateDto(int categoryId){
+        /// <summary>
+        /// With given category id it returns CategoryUpdateDto.
+        /// </summary>
+        /// <param name="categoryId">Id which is integer and greater than 0.</param>
+        /// <returns>It returns asynchronous IDataResult.</returns>
+        public async Task<IDataResult<CategoryUpdateDto>> GetUpdateDtoAsync(int categoryId){
             var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId);
             
             if(category != null){
@@ -150,7 +155,7 @@ namespace BlogApp.Services.Concrete
             return new DataResult<CategoryUpdateDto>(ResultStatus.Error,Messages.Category.NotFound(isPlural:false),null);
         }
 
-        public async Task<IResult> HardDelete(int categoryId)
+        public async Task<IResult> HardDeleteAsync(int categoryId)
         {
              var category = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryId);
 
@@ -164,7 +169,7 @@ namespace BlogApp.Services.Concrete
              return new Result(ResultStatus.Error,Messages.Category.NotFound(isPlural:false));
         }
 
-        public async Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto categoryUpdateDto, string modifiedByName)
+        public async Task<IDataResult<CategoryDto>> UpdateAsync(CategoryUpdateDto categoryUpdateDto, string modifiedByName)
         {
             var oldCategory = await _unitOfWork.Categories.GetAsync(c => c.Id == categoryUpdateDto.Id);
             var category = _mapper.Map<CategoryUpdateDto,Category>(categoryUpdateDto,oldCategory);
@@ -189,7 +194,7 @@ namespace BlogApp.Services.Concrete
             });
         }
 
-        public async Task<IDataResult<int>> Count(){
+        public async Task<IDataResult<int>> CountAsync(){
             var categoriesCount = await _unitOfWork.Categories.CountAsync();
 
             if(categoriesCount > -1){
@@ -199,7 +204,7 @@ namespace BlogApp.Services.Concrete
             return new DataResult<int>(ResultStatus.Error,Messages.Category.NotFound(isPlural:true),-1);
         }
         
-        public async Task<IDataResult<int>> CountByNonDeleted(){
+        public async Task<IDataResult<int>> CountByNonDeletedAsync(){
             var categoriesCount = await _unitOfWork.Categories.CountAsync(c => !c.IsDeleted);
 
             if(categoriesCount > -1){

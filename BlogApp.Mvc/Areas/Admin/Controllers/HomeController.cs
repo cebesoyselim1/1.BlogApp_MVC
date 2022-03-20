@@ -31,11 +31,11 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         [Area("Admin")]
         [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Index(){
-            var articleCountResult = await _articleService.CountByNonDeleted();
-            var categoryCountResult = await _categoryService.CountByNonDeleted();
-            var commentCountResult = await _commentService.CountByNonDeleted();
+            var articleCountResult = await _articleService.CountByNonDeletedAsync();
+            var categoryCountResult = await _categoryService.CountByNonDeletedAsync();
+            var commentCountResult = await _commentService.CountByNonDeletedAsync();
             var userCount = await _userManager.Users.CountAsync();
-            var articlesResult = await _articleService.GetAll();
+            var articlesResult = await _articleService.GetAllAsync();
 
             if(articleCountResult.ResultStatus == ResultStatus.Success && categoryCountResult.ResultStatus == ResultStatus.Success && commentCountResult.ResultStatus == ResultStatus.Success && userCount > -1 && articlesResult.ResultStatus == ResultStatus.Success){
                 return View(new DashboardViewModel(){

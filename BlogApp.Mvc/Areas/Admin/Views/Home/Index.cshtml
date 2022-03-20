@@ -110,7 +110,7 @@
                             <td>@article.CreatedDate.ToShortDateString()</td>
                             <td>@article.ViewCount</td>
                             <td>@article.CommentCount</td>
-                            <td>@article.IsActive</td>
+                            <td>@(article.IsActive  ? "Yes" : "No")</td>
                         </tr>
                     }
                     

@@ -10,16 +10,21 @@ namespace BlogApp.Services.Abstract
 {
     public interface ICategoryService
     {
-        Task<IDataResult<CategoryDto>> Get(int categoryId);
-        Task<IDataResult<CategoryUpdateDto>> GetUpdateDto(int categoryId);
-        Task<IDataResult<CategoryListDto>> GetAll();
-        Task<IDataResult<CategoryListDto>> GetAllNonDeleted();
-        Task<IDataResult<CategoryListDto>> GetAllNonDeletedAndActive();
-        Task<IDataResult<CategoryDto>> Add(CategoryAddDto c, string createdName);
-        Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto c, string modifiedName);
-        Task<IDataResult<CategoryDto>> Delete(int categoryId, string modifiedName);
-        Task<IResult> HardDelete(int categoryId);
-        public Task<IDataResult<int>> Count();
-        public Task<IDataResult<int>> CountByNonDeleted();
+        Task<IDataResult<CategoryDto>> GetAsync(int categoryId);
+        /// <summary>
+        /// With given category id it returns CategoryUpdateDto.
+        /// </summary>
+        /// <param name="categoryId">Id which is integer and greater than 0.</param>
+        /// <returns>It returns asynchronous IDataResult.</returns>
+        Task<IDataResult<CategoryUpdateDto>> GetUpdateDtoAsync(int categoryId);
+        Task<IDataResult<CategoryListDto>> GetAllAsync();
+        Task<IDataResult<CategoryListDto>> GetAllNonDeletedAsync();
+        Task<IDataResult<CategoryListDto>> GetAllNonDeletedAndActiveAsync();
+        Task<IDataResult<CategoryDto>> AddAsync(CategoryAddDto c, string createdName);
+        Task<IDataResult<CategoryDto>> UpdateAsync(CategoryUpdateDto c, string modifiedName);
+        Task<IDataResult<CategoryDto>> DeleteAsync(int categoryId, string modifiedName);
+        Task<IResult> HardDeleteAsync(int categoryId);
+        public Task<IDataResult<int>> CountAsync();
+        public Task<IDataResult<int>> CountByNonDeletedAsync();
     }
 }

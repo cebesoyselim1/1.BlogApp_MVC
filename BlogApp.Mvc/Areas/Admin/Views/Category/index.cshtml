@@ -59,8 +59,8 @@
                                 <td>@category.Id</td>
                                 <td>@category.Name</td>
                                 <td>@category.Description</td>
-                                <td>@category.IsActive</td>
-                                <td>@category.IsDeleted</td>
+                                <td>@(category.IsActive ? "Yes" : "No")</td>
+                                <td>@(category.IsDeleted ? "Yes" : "No")</td>
                                 <td>@category.Note</td>
                                 <td>@category.CreatedByName</td>
                                 <td>@category.CreatedDate.ToShortDateString()</td>
@@ -84,5 +84,5 @@
 }
 
 @section Scripts{
-    <script src="~/js/categoryIndex.js" type="application/ecmascript"></script>
+    <script src="~/AdminArea/js/categoryIndex.js" type="application/ecmascript"></script>
 }
