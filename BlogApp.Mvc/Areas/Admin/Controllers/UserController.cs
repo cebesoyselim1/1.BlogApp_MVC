@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using AutoMapper;
+using BlogApp.Entities.ComplexTypes;
 using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Dtos.UserDtos;
 using BlogApp.Mvc.Areas.Admin.Models;
@@ -95,7 +96,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
                 var oldUser = await _userManager.GetUserAsync(HttpContext.User);
                 var oldUserPicture = oldUser.Picture;
                 if(userUpdateDto.PictureFile != null){
-                    var imageUpdateDto = await _imageHelper.Upload(userUpdateDto.Username,userUpdateDto.PictureFile);
+                    var imageUpdateDto = await _imageHelper.Upload(userUpdateDto.Username,userUpdateDto.PictureFile,PictureType.User);
                     userUpdateDto.Picture = imageUpdateDto.ResultStatus == ResultStatus.Success ? imageUpdateDto.Data.FullName : oldUserPicture;
                     if(oldUserPicture != "UsersImage/defaultUser.png"){
                         isPictureUpdateted = true;
@@ -166,7 +167,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(UserAddDto userAddDto){
             if(ModelState.IsValid){
-                var imageUpdateDto = await _imageHelper.Upload(userAddDto.Username,userAddDto.PictureFile);
+                var imageUpdateDto = await _imageHelper.Upload(userAddDto.Username,userAddDto.PictureFile,PictureType.User);
                 userAddDto.Picture = imageUpdateDto.ResultStatus == ResultStatus.Success ? imageUpdateDto.Data.FullName : "UserImages/defaultUser.png";
                 var user = _mapper.Map<User>(userAddDto);
                 var result = await _userManager.CreateAsync(user,userAddDto.Password);
@@ -253,7 +254,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
                 var oldUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userUpdateDto.Id);
                 var oldPicture = oldUser.Picture;
                 if(userUpdateDto.PictureFile != null){
-                    var imageUpdateDto = await _imageHelper.Upload(userUpdateDto.Username,userUpdateDto.PictureFile);
+                    var imageUpdateDto = await _imageHelper.Upload(userUpdateDto.Username,userUpdateDto.PictureFile,PictureType.User);
                     userUpdateDto.Picture = imageUpdateDto.ResultStatus == ResultStatus.Success ? imageUpdateDto.Data.FullName : "UserImages/defaultUser.png";
                     isPictureUploaded = true;
                 }

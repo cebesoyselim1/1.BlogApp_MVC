@@ -10,11 +10,12 @@ namespace BlogApp.Services.Abstract
     public interface IArticleService
     {
         Task<IDataResult<ArticleDto>> GetAsync(int articleId);
+        Task<IDataResult<ArticleUpdateDto>> GetUpdateDtoAsync(int articleId);
         Task<IDataResult<ArticleListDto>> GetAllAsync();
         Task<IDataResult<ArticleListDto>> GetAllNonDeletedAsync();
         Task<IDataResult<ArticleListDto>> GetAllNonDeletedAndActiveAsync();
         Task<IDataResult<ArticleListDto>> GetAllByCategoryAsync(int categoryId);
-        Task<IDataResult<ArticleDto>> AddAsync(ArticleAddDto articleAddDto, string createdName);
+        Task<IDataResult<ArticleDto>> AddAsync(ArticleAddDto articleAddDto, string createdName, int userId);
         Task<IDataResult<ArticleDto>> UpdateAsync(ArticleUpdateDto articleUpdateDto, string modifiedName);
         Task<IResult> DeleteAsync(int articleId);
         Task<IResult> HardDeleteAsync(int articleId);

@@ -1,4 +1,4 @@
-@model BlogApp.Mvc.Areas.Admin.Models.ArticleAddViewModel
+@model BlogApp.Mvc.Areas.Admin.Models.ArticleUpdateViewModel
 
 @{
     Layout = "_Layout";
@@ -10,11 +10,13 @@
     <li class="breadcrumb-item active"><a asp-area="Admin" asp-controller="Article" asp-action="Add">Article</a></li>
     <li class="breadcrumb-item active"><a asp-area="Admin" asp-controller="Article" asp-action="Add">Add</a></li>
 </ol>
-<form asp-controller="Article" asp-action="Add" method="post" enctype="multipart/form-data">
+<form asp-controller="Article" asp-action="Update" method="post" enctype="multipart/form-data">
     <div class="row mt-2">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
+                    <input type="hidden" asp-for="Id"/>
+                    <input type="hidden" asp-for="UserId"/>
                     <div class="form-group">
                         <input type="text" asp-for="Title" id="articleTitle" class="form-control" placeholder="Article title..." />
                         <span asp-validation-for="Title" class="text-danger"></span>
@@ -44,14 +46,20 @@
                         <span asp-validation-for="Date" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="ThumbnailFile"></label>
+                        <label asp-for="Thumbnail">Picture</label>
+                        <input type="hidden" id="thumbnail" class="form-control-file" asp-for="Thumbnail"/>
+                        <img class="my-image" src="~/img/@Model.Thumbnail" alt="@Model.Title">
+                        <span asp-validation-for="Thumbnail" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="thumbnailUpload">Picture</label>
                         <input type="file" id="thumbnailUpload" accept="image/*" class="form-control-file" asp-for="ThumbnailFile"/>
-                        <span asp-validation-for="ThumbnailFile"></span>
+                        <span asp-validation-for="ThumbnailFile" class="text-danger"></span>
                     </div>
                     <div class="form-check">
                         <input type="checkbox" id="isActive" class="form-check-input"/>
                         <label for="isActive" class="form-check-label" asp-for="IsActive">Is Active</label>
-                        <span asp-validation-for="IsActive"></span>
+                        <span asp-validation-for="IsActive" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary btn-block mt-4">Save</button>
@@ -69,7 +77,7 @@
                         <div class="form-group col-md-6">
                             <label for="seoWriter">Seo Author</label>
                             <input type="text" id="seoWriter" class="form-control" asp-for="SeoAuthor"/>
-                            <span asp-validation-for="SeoAuthor"></span>
+                            <span asp-validation-for="SeoAuthor" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="seoTags">Seo Tags</label>
@@ -79,7 +87,7 @@
                         <div class="form-group col-md-12">
                             <label for="seoDescription">Seo Description</label>
                             <textarea id="seoDescription" class="form-control" asp-for="SeoDescription"></textarea>
-                            <span asp-validation-for="SeoDescription"></span>
+                            <span asp-validation-for="SeoDescription" class="text-danger"></span>
                         </div>
                     </div>
                 </div>

@@ -23,12 +23,12 @@ namespace BlogApp.Services.Concrete
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<IDataResult<ArticleDto>> AddAsync(ArticleAddDto articleAddDto, string createdByName)
+        public async Task<IDataResult<ArticleDto>> AddAsync(ArticleAddDto articleAddDto, string createdByName, int userId)
         {
             var article = _mapper.Map<Article>(articleAddDto);
             article.CreatedByName = createdByName;
             article.ModifiedByName = createdByName;
-
+            article.UserId = userId;
             var addingArticle = await _unitOfWork.Articles.AddAsync(article);
             await _unitOfWork.SaveAsync();
 
@@ -122,7 +122,8 @@ namespace BlogApp.Services.Concrete
 
         public async Task<IDataResult<ArticleDto>> UpdateAsync(ArticleUpdateDto articleUpdateDto, string modifiedByName)
         {
-            var article = _mapper.Map<Article>(articleUpdateDto);
+            var oldArticle = await _unitOfWork.Articles.GetAsync(a => a.Id == articleUpdateDto.Id);
+            var article = _mapper.Map<ArticleUpdateDto,Article>(articleUpdateDto,oldArticle);
 
             if(article != null){
                 article.ModifiedByName = modifiedByName;
@@ -154,6 +155,18 @@ namespace BlogApp.Services.Concrete
             }
 
             return new DataResult<int>(ResultStatus.Error,Messages.Comment.NotFound(isPlural:true),-1);
+        }
+
+        public async Task<IDataResult<ArticleUpdateDto>> GetUpdateDtoAsync(int articleId)
+        {
+            var article = await _unitOfWork.Articles.GetAsync(a => a.Id == articleId);
+
+            if(article != null){
+                var articleUpdateDto = _mapper.Map<ArticleUpdateDto>(article);
+                return new DataResult<ArticleUpdateDto>(ResultStatus.Success, Messages.Article.Get(isPlural:false,article.Title), articleUpdateDto);
+            }
+
+            return new DataResult<ArticleUpdateDto>(ResultStatus.Error, Messages.Article.NotFound(isPlural:false), null);
         }
     }
 }

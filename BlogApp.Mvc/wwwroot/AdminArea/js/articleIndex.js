@@ -1,5 +1,5 @@
 $(document).ready( function () {
-    $('#articlesTable').DataTable({
+    const dataTable = $('#articlesTable').DataTable({
         dom: "<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
                 "<'row'<'col-sm-5'i><'col-sm-7'p>>",
@@ -23,51 +23,68 @@ $(document).ready( function () {
                 action: function ( e, dt, node, config ) {
                     $.ajax({
                         type: 'GET',
-                        url: '/Admin/Category/GetAll/',
+                        url: '/Admin/Article/GetAll/',
                         contentType: 'application/json',
                         beforeSend: function(){
                             $("#spinner").show();
-                            $("#categoriesTable").hide();
+                            $("#articlesTable").hide();
                         },
-                        success: function(data){
-                            const categoryAddDto = jQuery.parseJSON(data);
-                            if(categoryAddDto.ResultStatus == 0){
+                        success: function (data) {
+                            const articleResult = jQuery.parseJSON(data);
+                            if (articleResult.Data.ResultStatus === 0) {
+                                let categoriesArray = [];
                                 let newTableBody = "";
-                                $.each(categoryAddDto.Categories.$values,function(index,category){
-                                    newTableBody += `
-                                        <tr data-id="category-row-${category.id}">
-                                            <td>${category.Id}</td>
-                                            <td>${category.Name}</td>
-                                            <td>${category.Description}</td>
-                                            <td>${category.IsActive ? "Yes" : "No"}</td>
-                                            <td>${category.IsDeleted ? "Yes" : "No"}</td>
-                                            <td>${category.Note}</td>
-                                            <td>${category.CreatedByName}</td>
-                                            <td>${ConvertToShortDate(category.CreatedDate)}</td>
-                                            <td>${category.ModifiedByName}</td>
-                                            <td>${ConvertToShortDate(category.ModifiedDate)}</td>
-                                            <td>
-                                                <button class="btn btn-warning btn-block" data-id="${category.id}"><span class="fa-solid fa-pen-to-square"></span></button>
-                                                <button class="btn btn-danger btn-delete btn-block" data-id="${category.id}"><span class="fa-solid fa-circle-xmark"></span></button>
-                                            </td>
-                                        </tr>
-                                        `;
+                                $.each(articleResult.Data.Articles.$values,function(index,article){
+                                    let newArticle = getJsonNetObject(article, articleResult.Data.Articles.$values);
+                                    let newCategory = getJsonNetObject(newArticle.Category, newArticle);
+                                    if (newCategory !== null) {
+                                        categoriesArray.push(newCategory)
+                                    }
+                                    if (newCategory === null) {
+                                        newCategory = categoriesArray.find((category) => {
+                                            return category.$id === newArticle.Category.$ref;
+                                        })
+                                    }
+
+                                    const newTableRow = dataTable.row.add([
+                                        newArticle.Id,
+                                        newCategory.Name,
+                                        newArticle.Title,
+                                        `<img src="/img/PostImages/${newArticle.Thumbnail}" alt="${newArticle.Title}" class="my-image-table" />`,
+                                        `${ConvertToShortDate(newArticle.Date)}`,
+                                        newArticle.ViewCount,
+                                        newArticle.CommentCount,
+                                        `${newArticle.IsActive ? "Yes" : "No"}`,
+                                        `${newArticle.IsDeleted ? "Yes" : "No"}`,
+                                        `${ConvertToShortDate(newArticle.CreatedDate)}`,
+                                        newArticle.CreatedByName,
+                                        `${ConvertToShortDate(newArticle.ModifiedDate)}`,
+                                        newArticle.ModifiedByName,
+                                        `
+                                        <button class="btn btn-primary btn-sm btn-update" data-id="${newArticle.Id}"><span class="fas fa-edit"></span></button>
+                                        <button class="btn btn-danger btn-sm btn-delete" data-id="${newArticle.Id}"><span class="fas fa-minus-circle"></span></button>
+                                            `
+                                    ]).node();
+                                    
+                                    const jqueryTableRow = $(newTableRow);
+                                    jqueryTableRow.attr('data-id', `article-row-${newArticle.Id}`);
+                                    
                                 });
-                                const newTableBodyObject = $(newTableBody);
-                                $("#categoriesTable > tbody").replaceWith(newTableBodyObject)
-                                $("#categoriesTable").fadeIn(2000);
+                                
+                                dataTable.draw();
+                                $("#articlesTable").fadeIn(2000);
                                 $("#spinner").hide();
 
-                                toastr.success(`${categoryAddDto.Message}`,"Successfull")
+                                toastr.success(`${articleResult.Message}`,"Successfull")
                             }
                             else{
-                                $("#categoriesTable").fadeIn(1000);
+                                $("#articlesTable").fadeIn(1000);
                                 $("#spinner").hide();
-                                toastr.error(`${categoryAddDto.Message}`,"Error")
+                                toastr.error(`${articleResult.Message}`,"Error")
                             }
                         },
                         error: function(err){
-                            $("#categoriesTable").fadeIn(1000);
+                            $("#articlesTable").fadeIn(1000);
                             $("#spinner").hide();
                             toastr.error(`${err.responseText}`,"Error")
                         }
@@ -81,13 +98,13 @@ $(document).ready( function () {
        
         $(document).on("click",".btn-delete",function(e){
             e.preventDefault();
-            const categoryId = $(this).attr("data-id");
-            const tableRow = $(`[data-id="category-row-${categoryId}"]`);
-            const categoryName = tableRow.find("td:eq(1)").text();
+            const articleId = $(this).attr("data-id");
+            const tableRow = $(`[data-id="article-row-${articleId}"]`);
+            const articleName = tableRow.find("td:eq(2)").text();
 
             Swal.fire({
                 title: 'Are you sure that you want to delete?',
-                text: `${categoryName} will be deleted!`,
+                text: `${articleName} will be deleted!`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -99,14 +116,14 @@ $(document).ready( function () {
                     $.ajax({
                         type: 'POST',
                         dataType: 'json',
-                        data: { categoryId: categoryId },
-                        url: '/Admin/Category/Delete/',
+                        data: { articleId: articleId },
+                        url: '/Admin/Article/Delete/',
                         success: function(data){
-                            const categoryDto = jQuery.parseJSON(data);
-                            if(categoryDto.ResultStatus == 0){
+                            const articleResult = jQuery.parseJSON(data);
+                            if(articleResult.ResultStatus == 0){
                                 Swal.fire(
                                     'Deleted!',
-                                    `${categoryDto.Message}`,
+                                    `${articleResult.Message}`,
                                     'success'
                                 );
                                 tableRow.fadeOut(2000);
@@ -114,7 +131,7 @@ $(document).ready( function () {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Oops...',
-                                    text: `${categoryDto.Message}`,
+                                    text: `${articleResult.Message}`,
                                 })
                             }
                         },
@@ -131,3 +148,5 @@ $(document).ready( function () {
         })
     })
 });
+
+

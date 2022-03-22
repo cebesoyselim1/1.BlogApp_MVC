@@ -4,22 +4,26 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using AutoMapper;
+using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Dtos.CategoryDtos;
 using BlogApp.Mvc.Areas.Admin.Models;
+using BlogApp.Mvc.Helpers.Abstract;
 using BlogApp.Services.Abstract;
 using BlogApp.Shared.Utilities.Extensions;
 using BlogApp.Shared.Utilities.Results.ComplexTypes;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.Mvc.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin,Editor")]
-    public class CategoryController:Controller
+    public class CategoryController:BaseController
     {
         private readonly ICategoryService _categoryService;
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, UserManager<User> userManager, IMapper mapper, IImageHelper imageHelper):base(userManager,mapper,imageHelper)
         {
             _categoryService = categoryService;
         }
@@ -39,7 +43,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CategoryAddDto categoryAddDto){
             if(ModelState.IsValid){
-                var result = await _categoryService.AddAsync(categoryAddDto,"Selim Cebesoy");
+                var result = await _categoryService.AddAsync(categoryAddDto,LoggedInUser.UserName);
                 if(result.ResultStatus == ResultStatus.Success){
                     var categoryAddAjaxViewModel = JsonSerializer.Serialize(new CategoryAddAjaxViewModel(){
                         CategoryDto = result.Data,
@@ -63,7 +67,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> Delete(int categoryId){
-            var result = await _categoryService.DeleteAsync(categoryId,"Selim Cebesoy");
+            var result = await _categoryService.DeleteAsync(categoryId,LoggedInUser.UserName);
             var categoryDto = JsonSerializer.Serialize(result.Data,new JsonSerializerOptions(){
                 ReferenceHandler = ReferenceHandler.Preserve
             });
@@ -82,7 +86,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(CategoryUpdateDto categoryUpdateDto){
             if(ModelState.IsValid){
-                var result = await _categoryService.UpdateAsync(categoryUpdateDto,"Selim Cebesoy");
+                var result = await _categoryService.UpdateAsync(categoryUpdateDto,LoggedInUser.UserName);
                 if(result.ResultStatus == ResultStatus.Success){
                     var categoryUpdateAjaxViewModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel(){
                         CategoryDto = result.Data,

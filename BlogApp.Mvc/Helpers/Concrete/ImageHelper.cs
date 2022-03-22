@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BlogApp.Entities.ComplexTypes;
 using BlogApp.Entities.Dtos.ImageDtos;
 using BlogApp.Mvc.Helpers.Abstract;
 using BlogApp.Shared.Utilities.Extensions;
@@ -19,18 +20,20 @@ namespace BlogApp.Mvc.Helpers.Concrete
 
         private readonly IWebHostEnvironment _env;
         private readonly string _wwwRoot;
-        private readonly string imagePath;
+        private readonly string imageFolder = "img";
+        private readonly string UserFolder = "UserPictures";
+        private readonly string PostFolder = "PostImages";
+
 
         public ImageHelper(IWebHostEnvironment env)
         {
             _env = env;
             _wwwRoot = _env.WebRootPath;
-            imagePath = "img";
         }
 
         public IDataResult<ImageDeleteDto> Delete(string pictureName)
         {
-            var path = Path.Combine($"{_wwwRoot}/{imagePath}/UserPictures",pictureName);
+            var path = Path.Combine($"{_wwwRoot}/{imageFolder}/UserPictures",pictureName);
             if(System.IO.File.Exists(path)){
                 var fileInfo = new FileInfo(path);
                 var imageDeleteDto = new ImageDeleteDto(){
@@ -45,25 +48,35 @@ namespace BlogApp.Mvc.Helpers.Concrete
             return new DataResult<ImageDeleteDto>(ResultStatus.Error,"Path not found.",null);
         }
 
-        public async Task<IDataResult<ImageUploadDto>> Upload(string userName, IFormFile pictureFile, string folderName = "UserImages")
+        public async Task<IDataResult<ImageUploadDto>> Upload(string name, IFormFile pictureFile, PictureType pictureType, string folderName = null)
         {
-            if(!Directory.Exists($"{_wwwRoot}/{imagePath}/{folderName}")){
-                Directory.CreateDirectory($"{_wwwRoot}/{imagePath}/{folderName}");
+            if(folderName == null){
+                if(pictureType == PictureType.User) folderName = UserFolder;
+                else if(pictureType == PictureType.Post) folderName = PostFolder;
+            }
+
+            if(!Directory.Exists($"{_wwwRoot}/{imageFolder}/{folderName}")){
+                Directory.CreateDirectory($"{_wwwRoot}/{imageFolder}/{folderName}");
             }
 
             var oldFileName = Path.GetFileNameWithoutExtension(pictureFile.FileName);
             var fileExtension = Path.GetExtension(pictureFile.FileName);
 
             DateTime dateTime = new DateTime();
-            var newFileName = $"{userName}_{dateTime.FullDateAndTimeStringWithUnderscore()}{fileExtension}";
+            var newFileName = $"{name}_{dateTime.FullDateAndTimeStringWithUnderscore()}{fileExtension}";
 
-            var path = Path.Combine($"{_wwwRoot}/{imagePath}/{folderName}",newFileName);
+            var path = Path.Combine($"{_wwwRoot}/{imageFolder}/{folderName}",newFileName);
 
             await using(var stream = new FileStream(path,FileMode.Create)){
                 await pictureFile.CopyToAsync(stream);
             }
 
-            return new DataResult<ImageUploadDto>(ResultStatus.Success,$"{userName}'s image has successfully been uploaded.",new ImageUploadDto(){
+            string message = "";
+
+            if(pictureType == PictureType.User) message = $"{name}'s image has successfully been uploaded.";
+            else if(pictureType == PictureType.Post) message = $"{name}'s post image has successfully been uploaded.";
+
+            return new DataResult<ImageUploadDto>(ResultStatus.Success,message,new ImageUploadDto(){
                 FullName = $"{folderName}/{newFileName}",
                 OldName = oldFileName,
                 Extension = fileExtension,
