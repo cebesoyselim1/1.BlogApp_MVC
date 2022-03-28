@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProgrammersBlog.Services.AutoMapper.Profiles;
 
 namespace BlogApp.Mvc
 {
@@ -32,14 +33,14 @@ namespace BlogApp.Mvc
             {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-            });
+            }).AddNToastNotifyToastr();
             services.AddSession();
-            services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile),typeof(UserProfile),typeof(ViewModelsProfile));
+            services.AddAutoMapper(typeof(CategoryProfile),typeof(ArticleProfile),typeof(UserProfile),typeof(ViewModelsProfile),typeof(CommentProfile));
             services.LoadMyServices(connectionString:_configuration.GetConnectionString("LocalDB"));
             services.AddScoped<IImageHelper,ImageHelper>();
             services.ConfigureApplicationCookie(options => {
-                options.LoginPath = new PathString("/Admin/User/Login/");
-                options.LogoutPath = new PathString("/Admin/User/Logout/");
+                options.LoginPath = new PathString("/Admin/Auth/Login/");
+                options.LogoutPath = new PathString("/Admin/Auth/Logout/");
                 options.Cookie = new CookieBuilder{
                     Name = "BlogApp",
                     HttpOnly = true,
@@ -48,7 +49,7 @@ namespace BlogApp.Mvc
                 };
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
-                options.AccessDeniedPath = new PathString("/Admin/User/AccessDenied/");
+                options.AccessDeniedPath = new PathString("/Admin/Auth/AccessDenied/");
             });
         }
 
@@ -66,6 +67,7 @@ namespace BlogApp.Mvc
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseNToastNotify();
 
             app.UseEndpoints(endpoints =>
             {   

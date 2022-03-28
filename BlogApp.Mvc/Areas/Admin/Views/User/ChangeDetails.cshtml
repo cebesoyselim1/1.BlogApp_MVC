@@ -1,44 +1,101 @@
 @model BlogApp.Entities.Dtos.UserDtos.UserUpdateDto
-
 @{
-    ViewBag.Title = "Profile Settings";
+    Layout = "_Layout";
+    ViewBag.Title = "Profil Düzenle";
 }
-
-<div class="row mt-5">
-    <div class="col-md-8 col-lg-6 mx-auto">
-        <div class="card">
-            <h3 class="card-header text-center"><span class="fa-solid fa-wrench"></span> Profile Settings</h3>
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card mt-1 mb-1">
+            <div class="card-header">
+                <h4 class="text-center"><span class="fas fa-edit"></span> Edit Profile</h4>
+            </div>
             <div class="card-body">
-                <form asp-controller="User" asp-action="ChangeDetails" method="post">
-                    <div asp-validation-summary="All" id="validation-summary" class="text-danger"></div>
-                    <input type="hidden" asp-for="Id" aria-hidden="true">
-                    <div class="form-group">
-                        <label asp-for="Username" class="form-text"></label>
-                        <input type="text" asp-for="Username" class="form-control">
-                        <span asp-validation-for="Username" class="text-danger"></span>
+                <form asp-controller="User" asp-action="ChangeDetails" enctype="multipart/form-data" method="post" id="form-user-update">
+                    <div asp-validation-summary="All" class="text-danger" id="validation-summary"></div>
+                    <input asp-for="Id" type="hidden" />
+                    <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="UserName"></label>
+                        <input class="form-control" asp-for="UserName" placeholder="Please, enter a username."/>
+                        <span class="text-danger" asp-validation-for="UserName"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Email" class="form-text"></label>
-                        <input type="email" asp-for="Email" class="form-control">
-                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Email"></label>
+                            <input type="email" class="form-control" asp-for="Email" placeholder="Please, enter your email."/>
+                            <span class="text-danger" asp-validation-for="Email"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="FirstName"></label>
+                            <input type="text" class="form-control" asp-for="FirstName" placeholder="Please, enter your name."/>
+                            <span class="text-danger" asp-validation-for="FirstName"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="LastName"></label>
+                            <input type="text" class="form-control" asp-for="LastName" placeholder="Please, enter your surname."/>
+                            <span class="text-danger" asp-validation-for="LastName"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="PhoneNumber"></label>
+                            <input type="text" class="form-control" asp-for="PhoneNumber" placeholder="Please, enter your telephone number."/>
+                            <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="WebsiteLink"></label>
+                            <input type="text" class="form-control" asp-for="WebsiteLink" placeholder="Please, enter your website link."/>
+                            <span class="text-danger" asp-validation-for="WebsiteLink"></span>
+                        </div>
+                        <div class="form-group col-md-12">
+                        <label asp-for="About"></label>
+                            <textarea class="form-control" asp-for="About" placeholder="Please, enter an information about you." rows="4"></textarea>
+                        <span class="text-danger" asp-validation-for="About"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="PhoneNumber" class="form-text"></label>
-                        <input type="text" asp-for="PhoneNumber" class="form-control">
-                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    <div class="form-group col-md-6">
+                        <label asp-for="TwitterLink"></label>
+                        <input type="text" class="form-control" asp-for="TwitterLink" placeholder="Please, enter your twitter profile."/>
+                        <span class="text-danger" asp-validation-for="TwitterLink"></span>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Picture"></label>
-                        <input type="hidden" asp-for="Picture">
-                        <img src="~/img/@Model.Picture" alt="@Model.Id" style="max-width: 50px;">
+                    <div class="form-group col-md-6">
+                        <label asp-for="FacebookLink"></label>
+                        <input type="text" class="form-control" asp-for="FacebookLink" placeholder="Please, enter your facebook profile."/>
+                        <span class="text-danger" asp-validation-for="FacebookLink"></span>
                     </div>
-                    <div class="form-group mb-4">
-                        <label asp-for="PictureFile" class="form-text"></label>
-                        <input type="file" accept="image/*" asp-for="PictureFile" class="form-file">
-                        <span asp-validation-for="PictureFile" class="text-danger"></span>
+                    <div class="form-group col-md-6">
+                        <label asp-for="InstagramLink"></label>
+                        <input type="text" class="form-control" asp-for="InstagramLink" placeholder="Please, enter your instagram profile."/>
+                        <span class="text-danger" asp-validation-for="InstagramLink"></span>
                     </div>
-                    <button asp-controller="User" asp-action="ChangeDetails" class="btn btn-warning btn-block mb-2"><span class="fa-solid fa-floppy-disk"></span> Save Changes</button>
-                    <button asp-controller="Home" asp-action="Index" class="btn btn-danger btn-block"><span class="fa-solid fa-xmark"></span> Cancel</button>
+                    <div class="form-group col-md-6">
+                        <label asp-for="LinkedInLink"></label>
+                        <input type="text" class="form-control" asp-for="LinkedInLink" placeholder="Please, enter your linkedn profile."/>
+                        <span class="text-danger" asp-validation-for="LinkedInLink"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="YoutubeLink"></label>
+                        <input type="text" class="form-control" asp-for="YoutubeLink" placeholder="Please, enter your youtube profile."/>
+                        <span class="text-danger" asp-validation-for="YoutubeLink"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="GitHubLink"></label>
+                        <input type="text" class="form-control" asp-for="GitHubLink" placeholder="Please, enter your github profile."/>
+                        <span class="text-danger" asp-validation-for="GitHubLink"></span>
+                    </div>
+                        
+                        <div class="form-group col-md-6">
+                            <label asp-for="Picture"></label>
+                            <input asp-for="Picture" type="hidden" />
+                            <img class="my-image" src="~/img/@Model.Picture" alt="@Model.UserName"/>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="PictureFile"></label>
+                            <input type="file" accept="image/*" class="form-control-file" asp-for="PictureFile" placeholder="Please, enter your telephone number."/>
+                            <span class="text-danger" asp-validation-for="PictureFile"></span>
+                        </div>
+                        <div class="form-group col-md-12 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg"><span class="fas fa-save"></span> Save</button>
+                            <a class="btn btn-danger btn-lg" asp-area="Admin" asp-controller="Home" asp-action="Index"><span class="fas fa-times"></span> Cancel</a>
+                        </div>
+                    </div>
+                    
                 </form>
             </div>
         </div>

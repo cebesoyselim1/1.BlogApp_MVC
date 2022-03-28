@@ -28,6 +28,9 @@ namespace BlogApp.Services.Utilities
             public static string HardDelete(string categoryName){
                 return $"{categoryName} has successfully been deleted from database.";
             }
+            public static string UndoDelete(string categoryName){
+                return $"{categoryName} has successfully been brought back.";
+            }
             public static string Count(int categoryCount){
                 return $"{categoryCount} categories has successfully been brought.";
             }
@@ -54,6 +57,9 @@ namespace BlogApp.Services.Utilities
             public static string HardDelete(string articleName){
                 return $"{articleName} has successfully been deleted from database.";
             }
+            public static string UndoDelete(string articleName){
+                return $"{articleName} has successfully been brought back.";
+            }
             public static string Count(int articleCount){
                 return $"{articleCount} articles has successfully been brought.";
             }
@@ -64,21 +70,33 @@ namespace BlogApp.Services.Utilities
                 if(isPlural) return "No comments found.";
                 return "Comment not found.";
             }
-            public static string Get(bool isPlural, string commentName = null){
+            public static string Get(bool isPlural, int commentId = -1){
                 if(isPlural) return "Comments has successfully been brought.";
-                else return $"{commentName} has successfully been brought.";
+                else return $"Comment it's id {commentId} has successfully been brought.";
             }
-            public static string Add(string commentName){
-                return $"{commentName} has successfully been added.";
+            public static string Add(string commentText){
+                if(commentText.Length > 50) return $"{commentText.Substring(0, 50) + "..."} has successfully been added.";
+                return $"{commentText} has successfully been added.";
             }
-            public static string Update(string commentName){
-                return $"{commentName} has successfully been updated.";
+            public static string Update(string commentText){
+                if(commentText.Length > 50) return $"{commentText.Substring(0, 50) + "..."} has successfully been updated.";
+                return $"{commentText} has successfully been updated.";
             }
-            public static string Delete(string commentName){
-                return $"{commentName} has succssfully been deleted.";
+            public static string Delete(string commentText){
+                if(commentText.Length > 50) return $"{commentText.Substring(0, 50) + "..."} has successfully been deleted.";
+                return $"{commentText} has successfully been deleted.";
             }
-            public static string HardDelete(string commentName){
-                return $"{commentName} has successfully been deleted from database.";
+            public static string HardDelete(string commentText){
+                if(commentText.Length > 50) return $"{commentText.Substring(0, 50) + "..."} has successfully been deleted from database.";
+                return $"{commentText} has successfully been added.";
+            }
+            public static string UndoDelete(string commentText){
+                if(commentText.Length > 50) return $"{commentText.Substring(0, 50) + "..."} has successfully been brought back.";
+                return $"{commentText} has successfully been brought back.";
+            }
+            public static string Approve(string commentText){
+                if(commentText.Length > 50) return $"{commentText.Substring(0, 50) + "..."} has successfully been approved.";
+                return $"{commentText} has successfully been approved.";
             }
             public static string Count(int commentCount){
                 return $"{commentCount} comments has successfully been brought.";

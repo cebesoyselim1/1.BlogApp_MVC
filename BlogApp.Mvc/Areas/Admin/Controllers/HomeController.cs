@@ -29,7 +29,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
         
         [Area("Admin")]
-        [Authorize(Roles = "Admin,Editor")]
+        [Authorize(Roles = "SuperAdmin,AdminArea.Home.Read")]
         public async Task<IActionResult> Index(){
             var articleCountResult = await _articleService.CountByNonDeletedAsync();
             var categoryCountResult = await _categoryService.CountByNonDeletedAsync();

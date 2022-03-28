@@ -12,8 +12,10 @@ using BlogApp.Mvc.Areas.Admin.Models;
 using BlogApp.Mvc.Helpers.Abstract;
 using BlogApp.Services.Abstract;
 using BlogApp.Shared.Utilities.Results.ComplexTypes;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 
 namespace BlogApp.Mvc.Areas.Admin.Controllers
 {
@@ -22,13 +24,17 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
     {
         private readonly IArticleService _articleService;
         private readonly ICategoryService _categoryService;
+        private readonly IToastNotification _toastNotification;
 
-        public ArticleController(IArticleService articleService, ICategoryService categoryService, UserManager<User> userManager, IMapper mapper,IImageHelper imageHelper):base(userManager,mapper,imageHelper)
+        public ArticleController(IArticleService articleService, ICategoryService categoryService, IToastNotification toastNotification, UserManager<User> userManager, IMapper mapper,IImageHelper imageHelper):base(userManager,mapper,imageHelper)
         {
             _articleService = articleService;
             _categoryService = categoryService;
+            _toastNotification = toastNotification;
         }
 
+        [HttpGet]
+        [Authorize(Roles = "SuperAdmin,Article.Read")]
         public async Task<IActionResult> Index(){
             var articles = await _articleService.GetAllNonDeletedAsync();
             if(articles.ResultStatus == ResultStatus.Success) return View(articles.Data);
@@ -36,6 +42,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin,Article.Create")]
         public async Task<IActionResult> Add(){
             var categories = await _categoryService.GetAllNonDeletedAndActiveAsync();
             if(categories.ResultStatus == ResultStatus.Success){
@@ -48,6 +55,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin,Article.Create")]
         public async Task<IActionResult> Add(ArticleAddViewModel articleAddViewModel){
             if(ModelState.IsValid){
                 var articleAddDto = Mapper.Map<ArticleAddDto>(articleAddViewModel);
@@ -55,7 +63,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
                 articleAddDto.Thumbnail = imageResult.Data.FullName;
                 var result = await _articleService.AddAsync(articleAddDto, LoggedInUser.UserName, LoggedInUser.Id);
                 if(result.ResultStatus == ResultStatus.Success){
-                    TempData.Add("SuccessMessage", result.Message);
+                    _toastNotification.AddSuccessToastMessage(result.Message);
                     return RedirectToAction("Index", "Article");
                 }else{
                     ModelState.AddModelError("", result.Message);
@@ -70,6 +78,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin,Article.Update")]
         public async Task<IActionResult> Update(int articleId){
             var articleResult = await _articleService.GetUpdateDtoAsync(articleId);
             var categoriesResult = await _categoryService.GetAllNonDeletedAndActiveAsync();
@@ -84,6 +93,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin,Article.Update")]
         public async Task<IActionResult> Update(ArticleUpdateViewModel articleUpdateViewModel){
             if(ModelState.IsValid){
                 bool isThumbnailUploaded = false;
@@ -105,7 +115,7 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
                     if(isThumbnailUploaded){
                         ImageHelper.Delete(oldThumbnailFile);
                     }
-                    TempData.Add("SuccessMessage", result.Message);
+                    _toastNotification.AddSuccessToastMessage(result.Message);
                     return RedirectToAction("Index", "Article");
                 }else{
                     ModelState.AddModelError("", result.Message);
@@ -117,13 +127,15 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin,Article.Delete")]
         public async Task<IActionResult> Delete(int articleId){
-            var result = await _articleService.DeleteAsync(articleId);
+            var result = await _articleService.DeleteAsync(articleId,LoggedInUser.UserName);
             var articleResult = JsonSerializer.Serialize(result);
             return Json(articleResult);
         }
 
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin,Article.Read")]
         public async Task<JsonResult> GetAll(){
             var articles = await _articleService.GetAllAsync();
             var articlesJson = JsonSerializer.Serialize(articles, new JsonSerializerOptions()
@@ -133,5 +145,42 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
             return Json(articlesJson);
         }
 
+        [Authorize(Roles = "SuperAdmin,Article.Read")]
+        [HttpGet]
+        public async Task<IActionResult> DeletedArticles()
+        {
+            var result = await _articleService.GetAllByDeletedAsync();
+            return View(result.Data);
+
+        }
+        [Authorize(Roles = "SuperAdmin,Article.Read")]
+        [HttpGet]
+        public async Task<JsonResult> GetAllDeletedArticles()
+        {
+            var result = await _articleService.GetAllByDeletedAsync();
+            var articles = JsonSerializer.Serialize(result, new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            });
+            return Json(articles);
+        }
+        [Authorize(Roles = "SuperAdmin,Article.Update")]
+        [HttpPost]
+        public async Task<JsonResult> UndoDelete(int articleId)
+        {
+            var result = await _articleService.UndoDeleteAsync(articleId, LoggedInUser.UserName);
+            var undoDeleteArticleResult = JsonSerializer.Serialize(result,new JsonSerializerOptions(){
+                ReferenceHandler = ReferenceHandler.Preserve
+            });
+            return Json(undoDeleteArticleResult);
+        }
+        [Authorize(Roles = "SuperAdmin,Article.Delete")]
+        [HttpPost]
+        public async Task<JsonResult> HardDelete(int articleId)
+        {
+            var result = await _articleService.HardDeleteAsync(articleId);
+            var hardDeletedArticleResult = JsonSerializer.Serialize(result);
+            return Json(hardDeletedArticleResult);
+        }
     }
 }

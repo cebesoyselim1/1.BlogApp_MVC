@@ -1,0 +1,90 @@
+﻿@model BlogApp.Entities.Dtos.ArticleDtos.ArticleListDto
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Deleted Articles";
+}
+<ol class="breadcrumb mb-3 mt-2">
+    <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index">Admin</a></li>
+    <li class="breadcrumb-item active"><a asp-area="Admin" asp-controller="Article" asp-action="DeletedArticles">Deleted Articles</a></li>
+</ol>
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table mr-1"></i>
+        Deleted Articles
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="deletedArticlesTable" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Category</th>
+                    <th>Title</th>
+                    <th>Picture</th>
+                    <th>Date</th>
+                    <th>View Count</th>
+                    <th>Comment Count</th>
+                    <th>Is Active?</th>
+                    <th>Is Deleted?</th>
+                    <th>Created Date</th>
+                    <th>Created By Name</th>
+                    <th>Modified Date</th>
+                    <th>Modified Name</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>#</th>
+                    <th>Category</th>
+                    <th>Title</th>
+                    <th>Picture</th>
+                    <th>Date</th>
+                    <th>View Count</th>
+                    <th>Comment Count</th>
+                    <th>Is Active?</th>
+                    <th>Is Deleted?</th>
+                    <th>Created Date</th>
+                    <th>Created By Name</th>
+                    <th>Modified Date</th>
+                    <th>Modified Name</th>
+                    <th></th>
+                </tr>
+                </tfoot>
+                <tbody>
+                @foreach (var article in Model.Articles)
+                {
+                    <tr name="@article.Id">
+                        <td>@article.Id</td>
+                        <td>@article.Category.Name</td>
+                        <td>@article.Title</td>
+                        <td><img src="~/img/@article.Thumbnail" class="my-image-table" style="max-width: 50px;" /></td>
+                        <td>@article.Date.ToShortDateString()</td>
+                        <td>@article.ViewCount</td>
+                        <td>@article.CommentCount</td>
+                        <td>@(article.IsActive ? "Yes" : "No")</td>
+                        <td>@(article.IsDeleted ? "Yes" : "No")</td>
+                        <td>@article.CreatedDate.ToShortDateString()</td>
+                        <td>@article.CreatedByName</td>
+                        <td>@article.ModifiedDate.ToShortDateString()</td>
+                        <td>@article.ModifiedByName</td>
+                        <td>
+                            <a class="btn btn-warning btn-sm btn-undo" data-id="@article.Id"><span class="fas fa-undo"></span></a>
+                            <button class="btn btn-danger btn-sm btn-delete" data-id="@article.Id"><span class="fas fa-minus-circle"></span></button>
+                        </td>
+                    </tr>
+                }
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script src="~/AdminArea/js/deletedArticles.js" type="application/ecmascript"></script>
+}
+@section Styles
+{
+    
+}

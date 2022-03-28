@@ -18,12 +18,14 @@ namespace BlogApp.Services.Abstract
         /// <returns>It returns asynchronous IDataResult.</returns>
         Task<IDataResult<CategoryUpdateDto>> GetUpdateDtoAsync(int categoryId);
         Task<IDataResult<CategoryListDto>> GetAllAsync();
+        Task<IDataResult<CategoryListDto>> GetAllByDeletedAsync();
         Task<IDataResult<CategoryListDto>> GetAllNonDeletedAsync();
         Task<IDataResult<CategoryListDto>> GetAllNonDeletedAndActiveAsync();
         Task<IDataResult<CategoryDto>> AddAsync(CategoryAddDto c, string createdName);
         Task<IDataResult<CategoryDto>> UpdateAsync(CategoryUpdateDto c, string modifiedName);
         Task<IDataResult<CategoryDto>> DeleteAsync(int categoryId, string modifiedName);
         Task<IResult> HardDeleteAsync(int categoryId);
+        Task<IDataResult<CategoryDto>> UndoDeleteAsync(int categoryId, string modifiedByName);
         public Task<IDataResult<int>> CountAsync();
         public Task<IDataResult<int>> CountByNonDeletedAsync();
     }

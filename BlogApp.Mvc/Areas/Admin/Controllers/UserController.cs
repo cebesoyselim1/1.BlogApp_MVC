@@ -20,71 +20,38 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NToastNotify;
 
 namespace BlogApp.Mvc.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class UserController:Controller
+    public class UserController:BaseController
     {
-        private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IWebHostEnvironment _env;
-        private readonly IMapper _mapper;
-        private readonly IImageHelper _imageHelper;
+        private readonly IToastNotification _toastNotification;
 
-        public UserController(UserManager<User> userManager, SignInManager<User> signInManager, IWebHostEnvironment env, IMapper mapper, IImageHelper imageHelper)
+        public UserController(UserManager<User> userManager, SignInManager<User> signInManager, IWebHostEnvironment env, IMapper mapper, IImageHelper imageHelper, IToastNotification toastNotification):base(userManager,mapper,imageHelper)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
             _env = env;
-            _mapper = mapper;
-            _imageHelper = imageHelper;
+            _toastNotification = toastNotification;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,User.Read")]
         public async Task<IActionResult> Index(){
-            var users = await _userManager.Users.ToListAsync();
+            var users = await UserManager.Users.ToListAsync();
             return View(new UserListDto(){
                 Users = users,
                 ResultStatus = ResultStatus.Success
             });
         }
-        
-        [HttpGet]
-        public IActionResult Login(){
-            return View("UserLogin");
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> Login(UserLoginDto userLoginDto){
-            if(ModelState.IsValid){
-                var user = await _userManager.FindByEmailAsync(userLoginDto.Email);
-                if(user != null){
-                    var result = await _signInManager.PasswordSignInAsync(user,userLoginDto.Password,userLoginDto.RememberMe,false);
-                    if(result.Succeeded){
-                        return RedirectToAction("Index","Home");
-                    }else{
-                        ModelState.AddModelError("","Wrong Email or Password");
-                    }
-                }else{
-                    ModelState.AddModelError("","Wrong Email or Password");
-                }
-            }
-            return View("UserLogin");
-        }
-        
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Logout(){
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index","Home",new {Area = ""});
-        }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> ChangeDetails(){
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            var userUpdateDto = _mapper.Map<UserUpdateDto>(user);
+            var user = await UserManager.GetUserAsync(HttpContext.User);
+            var userUpdateDto = Mapper.Map<UserUpdateDto>(user);
             return View(userUpdateDto);
         } 
 
@@ -93,23 +60,23 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         public async Task<IActionResult> ChangeDetails(UserUpdateDto userUpdateDto){
             if(ModelState.IsValid){
                 var isPictureUpdateted = false;
-                var oldUser = await _userManager.GetUserAsync(HttpContext.User);
+                var oldUser = await UserManager.GetUserAsync(HttpContext.User);
                 var oldUserPicture = oldUser.Picture;
                 if(userUpdateDto.PictureFile != null){
-                    var imageUpdateDto = await _imageHelper.Upload(userUpdateDto.Username,userUpdateDto.PictureFile,PictureType.User);
+                    var imageUpdateDto = await ImageHelper.Upload(userUpdateDto.UserName,userUpdateDto.PictureFile,PictureType.User);
                     userUpdateDto.Picture = imageUpdateDto.ResultStatus == ResultStatus.Success ? imageUpdateDto.Data.FullName : oldUserPicture;
                     if(oldUserPicture != "UsersImage/defaultUser.png"){
                         isPictureUpdateted = true;
                     }
                 }
 
-                var updatedUser = _mapper.Map<UserUpdateDto,User>(userUpdateDto,oldUser);
-                var result = await _userManager.UpdateAsync(updatedUser);
+                var updatedUser = Mapper.Map<UserUpdateDto,User>(userUpdateDto,oldUser);
+                var result = await UserManager.UpdateAsync(updatedUser);
                 if(result.Succeeded){
                     if(isPictureUpdateted){
-                        _imageHelper.Delete(oldUserPicture);
+                        ImageHelper.Delete(oldUserPicture);
                     }
-                    TempData.Add("SuccessMessage",$"{updatedUser.UserName} has successfully been updated.");
+                    _toastNotification.AddSuccessToastMessage($"{updatedUser.UserName} has successfully been updated.");
                     return View(userUpdateDto);
                 }else{
                     foreach (var error in result.Errors)
@@ -132,15 +99,15 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         [Authorize]
         public async Task<IActionResult> PasswordChange(UserPasswordChangeDto userPasswordChangeDto){
             if(ModelState.IsValid){
-                var user = await _userManager.GetUserAsync(HttpContext.User);
-                var IsValidate = await _userManager.CheckPasswordAsync(user,userPasswordChangeDto.CurrentPassword);
+                var user = await UserManager.GetUserAsync(HttpContext.User);
+                var IsValidate = await UserManager.CheckPasswordAsync(user,userPasswordChangeDto.CurrentPassword);
                 if(IsValidate){
-                    var result = await _userManager.ChangePasswordAsync(user,userPasswordChangeDto.CurrentPassword,userPasswordChangeDto.NewPassword);
+                    var result = await UserManager.ChangePasswordAsync(user,userPasswordChangeDto.CurrentPassword,userPasswordChangeDto.NewPassword);
                     if(result.Succeeded){
-                        await _userManager.UpdateSecurityStampAsync(user);
+                        await UserManager.UpdateSecurityStampAsync(user);
                         await _signInManager.SignOutAsync();
                         await _signInManager.PasswordSignInAsync(user,userPasswordChangeDto.NewPassword,true,false);
-                        TempData.Add("SuccessMessage","Password has successfully been updated.");
+                        _toastNotification.AddSuccessToastMessage("Password has successfully been updated.");
                         return View();
                     }else{
                         foreach (var error in result.Errors)
@@ -158,19 +125,19 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,User.Create")]
         public IActionResult Add(){
             return PartialView("_UserAddPartial");
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,User.Create")]
         public async Task<IActionResult> Add(UserAddDto userAddDto){
             if(ModelState.IsValid){
-                var imageUpdateDto = await _imageHelper.Upload(userAddDto.Username,userAddDto.PictureFile,PictureType.User);
+                var imageUpdateDto = await ImageHelper.Upload(userAddDto.UserName,userAddDto.PictureFile,PictureType.User);
                 userAddDto.Picture = imageUpdateDto.ResultStatus == ResultStatus.Success ? imageUpdateDto.Data.FullName : "UserImages/defaultUser.png";
-                var user = _mapper.Map<User>(userAddDto);
-                var result = await _userManager.CreateAsync(user,userAddDto.Password);
+                var user = Mapper.Map<User>(userAddDto);
+                var result = await UserManager.CreateAsync(user,userAddDto.Password);
                 if(result.Succeeded){
                     var userAddAjaxViewModel = JsonSerializer.Serialize(new UserAddAjaxViewModel(){
                         UserDto = new UserDto(){
@@ -200,9 +167,9 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,User.Read")]
         public async Task<IActionResult> GetAllUsers(){
-            var users = await _userManager.Users.ToListAsync();
+            var users = await UserManager.Users.ToListAsync();
             var userListDto = JsonSerializer.Serialize(new UserListDto(){
                 Users = users,
                 ResultStatus = ResultStatus.Success
@@ -213,11 +180,14 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,User.Delete")]
         public async Task<IActionResult> Delete(int userId){
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-            var result = await _userManager.DeleteAsync(user);
+            var user = await UserManager.FindByIdAsync(userId.ToString());
+            var result = await UserManager.DeleteAsync(user);
             if(result.Succeeded){
+                if(user.Picture != "UserImages/defaultUser.png"){
+                    ImageHelper.Delete(user.Picture);
+                }
                 var userDto = JsonSerializer.Serialize(new UserDto(){
                     User = user,
                     ResultStatus = ResultStatus.Success,
@@ -238,31 +208,39 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
             }
         }
 
+        [Authorize(Roles = "SuperAdmin,User.Read")]
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        public async Task<PartialViewResult> GetDetail(int userId)
+        {
+            var user = await UserManager.Users.SingleOrDefaultAsync(u=>u.Id==userId);
+            return PartialView("_GetDetailPartial", new UserDto{User = user});
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "SuperAdmin,User.Update")]
         public async Task<IActionResult> Update(int userId){
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            var userUpdateDto = _mapper.Map<UserUpdateDto>(user);
+            var user = await UserManager.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var userUpdateDto = Mapper.Map<UserUpdateDto>(user);
             return PartialView("_UserUpdatePartial",userUpdateDto);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,User.Update")]
         public async Task<IActionResult> Update(UserUpdateDto userUpdateDto){
             if(ModelState.IsValid){
                 var isPictureUploaded = false;
-                var oldUser = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userUpdateDto.Id);
+                var oldUser = await UserManager.Users.FirstOrDefaultAsync(u => u.Id == userUpdateDto.Id);
                 var oldPicture = oldUser.Picture;
                 if(userUpdateDto.PictureFile != null){
-                    var imageUpdateDto = await _imageHelper.Upload(userUpdateDto.Username,userUpdateDto.PictureFile,PictureType.User);
+                    var imageUpdateDto = await ImageHelper.Upload(userUpdateDto.UserName,userUpdateDto.PictureFile,PictureType.User);
                     userUpdateDto.Picture = imageUpdateDto.ResultStatus == ResultStatus.Success ? imageUpdateDto.Data.FullName : "UserImages/defaultUser.png";
                     isPictureUploaded = true;
                 }
-                var user = _mapper.Map<UserUpdateDto,User>(userUpdateDto,oldUser);
-                var result = await _userManager.UpdateAsync(user);
+                var user = Mapper.Map<UserUpdateDto,User>(userUpdateDto,oldUser);
+                var result = await UserManager.UpdateAsync(user);
                 if(result.Succeeded){
                     if(isPictureUploaded){
-                        _imageHelper.Delete(oldPicture);
+                        ImageHelper.Delete(oldPicture);
                     }
                     var userUpdateAjaxViewModel = JsonSerializer.Serialize(new UserUpdateAjaxViewModel(){
                         UserDto = new UserDto(){
@@ -292,8 +270,5 @@ namespace BlogApp.Mvc.Areas.Admin.Controllers
             return Json(userUpdateAjaxErrorViewModel);
         }
 
-        public IActionResult AccessDenied(){
-            return View();
-        }
     }
 }

@@ -25,7 +25,10 @@
                             <th>Id</th>
                             <th>UserName</th>
                             <th>Email</th>
+                            <th>Name</th>
+                            <th>Surname</th>
                             <th>Telephone</th>
+                            <th>About User</th>
                             <th>Picture</th>
                             <th></th>
                         </tr>
@@ -36,7 +39,10 @@
                             <th>Id</th>
                             <th>UserName</th>
                             <th>Email</th>
+                            <th>Name</th>
+                            <th>Surname</th>
                             <th>Telephone</th>
+                            <th>About User</th>
                             <th>Picture</th>
                             <th></th>
                         </tr>
@@ -49,13 +55,18 @@
                                 <td>@user.Id</td>
                                 <td>@user.UserName</td>
                                 <td>@user.Email</td>
+                                <td>@user.FirstName</td>
+                                <td>@user.LastName</td>
                                 <td>@user.PhoneNumber</td>
+                                <td>@(user.About.Length>75 ? user.About.Substring(0,75):user.About)</td>
                                 <td>
                                     <img src="~/img/@user.Picture" alt="picture" style="max-width: 50px;">
                                 </td>
                                 <td>
-                                    <button class="btn btn-warning btn-update btn-block" data-id="@user.Id"><span class="fa-solid fa-pen-to-square"></span></button>
-                                    <button class="btn btn-danger btn-delete btn-block" data-id="@user.Id"><span class="fa-solid fa-circle-xmark"></span></button>
+                                    <button class="btn btn-info btn-sm btn-detail" data-id="@user.Id"><span class="fas fa-newspaper"></span></button>
+                                    <button class="btn btn-warning btn-sm btn-assign" data-id="@user.Id"><span class="fas fa-user-shield"></span></button>
+                                    <button class="btn btn-primary btn-sm btn-update" data-id="@user.Id"><span class="fas fa-edit"></span></button>
+                                    <button class="btn btn-danger btn-sm btn-delete" data-id="@user.Id"><span class="fas fa-minus-circle"></span></button>
                                 </td>
                             </tr>
                         }                    

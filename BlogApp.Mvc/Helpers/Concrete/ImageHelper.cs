@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BlogApp.Entities.ComplexTypes;
 using BlogApp.Entities.Dtos.ImageDtos;
@@ -61,6 +62,9 @@ namespace BlogApp.Mvc.Helpers.Concrete
 
             var oldFileName = Path.GetFileNameWithoutExtension(pictureFile.FileName);
             var fileExtension = Path.GetExtension(pictureFile.FileName);
+
+            Regex regex = new Regex("[*'\",._&#^@]");
+            name = regex.Replace(name, string.Empty);
 
             DateTime dateTime = new DateTime();
             var newFileName = $"{name}_{dateTime.FullDateAndTimeStringWithUnderscore()}{fileExtension}";

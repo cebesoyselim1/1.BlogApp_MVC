@@ -1,0 +1,88 @@
+@using BlogApp.Shared.Utilities.Results.ComplexTypes
+@model BlogApp.Entities.Dtos.CategoryDtos.CategoryListDto
+
+<ol class="breadcrumb mb-4 mt-2">
+    <li class="breadcrumb-item"> <a asp-area="Admin" asp-controller="Category" asp-action="Index">Admin</a> </li>
+    <li class="breadcrumb-item active"> <a asp-area="Admin" asp-controller="Category" asp-action="DeletedCategories">Deleted Categories</a> </li>
+</ol>
+
+@if(Model.ResultStatus == ResultStatus.Success){
+    <div id="modalPlaceHolder" aria-hidden="true"></div>
+    <div class="card mt-2">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Deleted Categories Table
+        </div>
+        <div class="card-body">
+            <div class="spinner-border m-5" id="spinner" role="status" style="display: none;" aria-hidden="true">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <div class="table-responsive">
+
+                <table class="table table-bordered" id="deletedCategoriesTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Is Active?</th>
+                            <th>Is Deleted?</th>
+                            <th>Notes</th>
+                            <th>Created By Name</th>
+                            <th>Created Date</th>
+                            <th>Modified By Name</th>
+                            <th>Modified Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tfoot>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Is Active?</th>
+                            <th>Is Deleted?</th>
+                            <th>Notes</th>
+                            <th>Created By Name</th>
+                            <th>Created Date</th>
+                            <th>Modified By Name</th>
+                            <th>Modified Date</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+
+                    <tbody>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <tr data-id="category-row-@category.Id">
+                                <td>@category.Id</td>
+                                <td>@category.Name</td>
+                                <td>@category.Description</td>
+                                <td>@(category.IsActive ? "Yes" : "No")</td>
+                                <td>@(category.IsDeleted ? "Yes" : "No")</td>
+                                <td>@category.Note</td>
+                                <td>@category.CreatedByName</td>
+                                <td>@category.CreatedDate.ToShortDateString()</td>
+                                <td>@category.ModifiedByName</td>
+                                <td>@category.ModifiedDate.ToShortDateString()</td>
+                                <td>
+                                    <button class="btn btn-warning btn-undo btn-block" data-id="@category.Id"><span class="fas fa-undo"></span></button>
+                                    <button class="btn btn-danger btn-delete btn-block" data-id="@category.Id"><span class="fa-solid fa-circle-xmark"></span></button>
+                                </td>
+                            </tr>
+                        }                    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}else{
+    <div class="alert alert-danger mt-4">
+        No Categories Found.
+    </div>
+}
+
+@section Scripts{
+    <script src="~/AdminArea/js/deletedCategories.js" type="application/ecmascript"></script>
+}

@@ -1,4 +1,6 @@
-$(document).ready( function () {
+$(document).ready(function () {
+
+    /* Datatable starts here */
     const dataTable = $('#usersTable').DataTable({
         dom: "<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +
                 "<'row'<'col-sm-12'tr>>" +
@@ -34,13 +36,18 @@ $(document).ready( function () {
                                         user.Id,
                                         user.UserName,
                                         user.Email,
+                                        user.FirstName,
+                                        user.LastName,
                                         user.PhoneNumber,
+                                        user.About.length > 75 ? user.About.substring(0, 75) : user.About,
                                         `
                                             <img src="/img/${user.Picture}" alt="picture" style="max-width: 50px;">
                                         `,
                                         `
-                                            <button class="btn btn-warning btn-update btn-block" data-id=${user.Id}><span class="fa-solid fa-pen-to-square"></span></button>
-                                            <button class="btn btn-danger btn-delete btn-block" data-id=${user.Id}><span class="fa-solid fa-circle-xmark"></span></button>
+                                            <button class="btn btn-info btn-sm btn-detail" data-id="${user.Id}"><span class="fas fa-newspaper"></span></button>
+                                            <button class="btn btn-warning btn-sm btn-assign" data-id="${user.Id}"><span class="fas fa-user-shield"></span></button>
+                                            <button class="btn btn-primary btn-sm btn-update" data-id="${user.Id}"><span class="fas fa-edit"></span></button>
+                                            <button class="btn btn-danger btn-sm btn-delete" data-id="${user.Id}"><span class="fas fa-minus-circle"></span></button>
                                         `
                                     ]).node();
                                     const jQueryTableRow = $(tableRow);
@@ -65,8 +72,11 @@ $(document).ready( function () {
             }
         ]
     });
+    /* Datatable ends here */
 
-    $(function(){
+    $(function () {
+
+        /* Get request for Add method starts here */
         const modalPlaceHolder = $("#modalPlaceHolder");
         const url = '/Admin/User/Add/';
         $("#btnAdd").click(function(){
@@ -75,7 +85,9 @@ $(document).ready( function () {
                 modalPlaceHolder.find(".modal").modal("show");
             })
         })
+        /* Get request for Add method ends here */
 
+        /* Post request for Add method starts here */
         modalPlaceHolder.on("click","#btnSave",function(e){
             e.preventDefault();
             const form = $("#user-add-form");
@@ -95,16 +107,21 @@ $(document).ready( function () {
                     if(IsValid){
                         modalPlaceHolder.find(".modal").modal("hide");
                         const tableRow = dataTable.row.add([
-                            userAddAjaxViewModel.UserDto.User.Id,
-                            userAddAjaxViewModel.UserDto.User.UserName,
-                            userAddAjaxViewModel.UserDto.User.Email,
-                            userAddAjaxViewModel.UserDto.User.PhoneNumber,
+                            userAddAjaxModel.UserDto.User.Id,
+                            userAddAjaxModel.UserDto.User.UserName,
+                            userAddAjaxModel.UserDto.User.Email,
+                            userAddAjaxModel.UserDto.User.FirstName,
+                            userAddAjaxModel.UserDto.User.LastName,
+                            userAddAjaxModel.UserDto.User.PhoneNumber,
+                            userAddAjaxModel.UserDto.User.About.length > 75 ? userAddAjaxModel.UserDto.User.About.substring(0, 75) : userAddAjaxModel.UserDto.User.About,
                             `
                                 <img src="/img/${userAddAjaxViewModel.UserDto.User.Picture}" alt="picture" style="max-width: 50px;">
                             `,
                             `
-                                <button class="btn btn-warning btn-update btn-block" data-id=${userAddAjaxViewModel.UserDto.User.Id}><span class="fa-solid fa-pen-to-square"></span></button>
-                                <button class="btn btn-danger btn-delete btn-block" data-id=${userAddAjaxViewModel.UserDto.User.Id}><span class="fa-solid fa-circle-xmark"></span></button>
+                                <button class="btn btn-info btn-sm btn-detail" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-newspaper"></span></button>
+                                <button class="btn btn-warning btn-sm btn-assign" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-user-shield"></span></button>
+                                <button class="btn btn-primary btn-sm btn-update" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
+                                <button class="btn btn-danger btn-sm btn-delete" data-id="${userAddAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>
                             `
                         ]).node();
                         const jQueryTableRow = $(tableRow);
@@ -118,7 +135,9 @@ $(document).ready( function () {
                 }
             })
         })
+        /* Post request for Add method ends here */
 
+        /* Post request for Delete method starts here */
         $(document).on("click",".btn-delete",function(e){
             e.preventDefault();
             var userId = $(this).attr("data-id");
@@ -165,9 +184,13 @@ $(document).ready( function () {
                 }
             })
         })
+        /* Post request for Delete method ends here */
+
     })
 
-    $(function(){
+    $(function () {
+
+        /* Get request for Update method starts here */
         const modalPlaceHolder = $("#modalPlaceHolder");
         $("#usersTable").on("click",".btn-update",function(e){
             e.preventDefault();
@@ -180,7 +203,9 @@ $(document).ready( function () {
                 toastr.error("Error");
             })
         })
+        /* Get request for Update method ends here */
 
+        /* Post request for Update method starts here */
         modalPlaceHolder.on("click","#btnUpdate",function(e){
             e.preventDefault();
             var form = $("#user-update-form");
@@ -202,16 +227,19 @@ $(document).ready( function () {
                         var tableRow = $("#usersTable").find(`[data-id="user-row-${userId}"]`);
                         modalPlaceHolder.find(".modal").modal("hide");
                         dataTable.row(tableRow).data([
-                            userUpdateAjaxViewModel.UserDto.User.Id,
-                            userUpdateAjaxViewModel.UserDto.User.UserName,
-                            userUpdateAjaxViewModel.UserDto.User.Email,
-                            userUpdateAjaxViewModel.UserDto.User.PhoneNumber,
+                            userUpdateAjaxModel.UserDto.User.Id,
+                            userUpdateAjaxModel.UserDto.User.UserName,
+                            userUpdateAjaxModel.UserDto.User.Email,
+                            userUpdateAjaxModel.UserDto.User.FirstName,
+                            userUpdateAjaxModel.UserDto.User.LastName,
+                            userUpdateAjaxModel.UserDto.User.PhoneNumber,
+                            userUpdateAjaxModel.UserDto.User.About.length > 75 ? userUpdateAjaxModel.UserDto.User.About.substring(0, 75) : userUpdateAjaxModel.UserDto.User.About,
+                            `<img src="/img/${userUpdateAjaxModel.UserDto.User.Picture}" alt="${userUpdateAjaxModel.UserDto.User.UserName}" class="my-image-table" />`,
                             `
-                                <img src="/img/${userUpdateAjaxViewModel.UserDto.User.Picture}" alt="picture" style="max-width: 50px;">
-                            `,
-                            `
-                                <button class="btn btn-warning btn-update btn-block" data-id=${userUpdateAjaxViewModel.UserDto.User.Id}><span class="fa-solid fa-pen-to-square"></span></button>
-                                <button class="btn btn-danger btn-delete btn-block" data-id=${userUpdateAjaxViewModel.UserDto.User.Id}><span class="fa-solid fa-circle-xmark"></span></button>
+                                <button class="btn btn-info btn-sm btn-detail" data-id="${userUpdateAjaxModel.UserDto.User.Id}"><span class="fas fa-newspaper"></span></button>
+                                <button class="btn btn-warning btn-sm btn-assign" data-id="${userUpdateAjaxModel.UserDto.User.Id}"><span class="fas fa-user-shield"></span></button>
+                                <button class="btn btn-primary btn-sm btn-update" data-id="${userUpdateAjaxModel.UserDto.User.Id}"><span class="fas fa-edit"></span></button>
+                                <button class="btn btn-danger btn-sm btn-delete" data-id="${userUpdateAjaxModel.UserDto.User.Id}"><span class="fas fa-minus-circle"></span></button>
                             `
                         ])
                         tableRow.attr("data-id",`user-row-${userId}`)
@@ -231,5 +259,92 @@ $(document).ready( function () {
                 }
             })
         })
+        /* Post request for Update method ends here */
     })
+
+    $(function () {
+        /* Get request for detail starts here */
+        const url = '/Admin/User/GetDetail/';
+        const placeHolderDiv = $('#modalPlaceHolder');
+        $(document).on('click',
+            '.btn-detail',
+            function (event) {
+                event.preventDefault();
+                const id = $(this).attr('data-id');
+                $.get(url, { userId: id }).done(function (data) {
+                    placeHolderDiv.html(data);
+                    placeHolderDiv.find('.modal').modal('show');
+                }).fail(function (err) {
+                    toastr.error(`${err.responseText}`, 'Error!');
+            });
+        });
+        /* Get request for detail ends here */
+    })
+
+    $(function () {
+        const url = '/Admin/Role/Assign/';
+        const placeHolderDiv = $('#modalPlaceHolder');
+        $(document).on('click',
+            '.btn-assign',
+            function (event) {
+                event.preventDefault();
+                const id = $(this).attr('data-id');
+                $.get(url, { userId: id }).done(function (data) {
+                    console.log("sa")
+                    placeHolderDiv.html(data);
+                    placeHolderDiv.find('.modal').modal('show');
+                }).fail(function (err) {
+                    toastr.error(`${err.responseText}`, 'Error!');
+                });
+            });
+
+        /* Ajax POST / Updating a Comment starts from here */
+
+        placeHolderDiv.on('click',
+            '#btnAssign',
+            function (event) {
+                event.preventDefault();
+                const form = $('#form-role-assign');
+                const actionUrl = form.attr('action');
+                const dataToSend = new FormData(form.get(0));
+                console.log(actionUrl)
+                $.ajax({
+                    url: actionUrl,
+                    type: 'POST',
+                    data: dataToSend,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        const userRoleAjaxViewModel = jQuery.parseJSON(data);
+                        //if (commentUpdateAjaxModel) {
+                        //    const id = commentUpdateAjaxModel.CommentDto.Comment.Id;
+                        //    const tableRow = $(`[name="${id}"]`);
+                        //}
+                        const id = userRoleAjaxViewModel.UserDto.User.Id;
+                        const tableRow = $(`[name="${id}"]`);
+                        const newFormBody = $('.modal-body', userRoleAjaxViewModel.RoleAssignPartial);
+                        placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
+                        const isValid = newFormBody.find('[name="IsValid"]').val() === 'True';
+                        if (isValid) {
+                            placeHolderDiv.find('.modal').modal('hide');
+                            tableRow.attr("name", `${id}`);
+                            dataTable.row(tableRow).invalidate();
+                            toastr.success(`${userRoleAjaxViewModel.UserDto.Message}`, "Successfull!");
+                        } else {
+                            let summaryText = "";
+                            $('#validation-summary > ul > li').each(function () {
+                                let text = $(this).text();
+                                summaryText = `*${text}\n`;
+                            });
+                            toastr.warning(summaryText);
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        toastr.error(`${error.responseText}`, 'Error!');
+                    }
+                });
+            });
+
+    });
 } );

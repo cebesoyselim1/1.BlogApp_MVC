@@ -11,10 +11,6 @@ $(document).ready( function () {
                     id: "btnAdd"
                 },
                 action: function (e, dt, node, config) {
-                    let url = window.location.href;
-                    url = url.replace("/Index", "");
-                    window.open(`${url}/Add`, "_self");
-                    window.open()
                 }
             },
             {
@@ -33,7 +29,6 @@ $(document).ready( function () {
                             const articleResult = jQuery.parseJSON(data);
                             if (articleResult.Data.ResultStatus === 0) {
                                 let categoriesArray = [];
-                                let newTableBody = "";
                                 $.each(articleResult.Data.Articles.$values,function(index,article){
                                     let newArticle = getJsonNetObject(article, articleResult.Data.Articles.$values);
                                     let newCategory = getJsonNetObject(newArticle.Category, newArticle);
