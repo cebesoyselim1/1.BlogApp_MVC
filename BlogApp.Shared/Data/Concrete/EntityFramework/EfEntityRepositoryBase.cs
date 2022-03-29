@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using BlogApp.Shared.Data.Abstact;
 using BlogApp.Shared.Entities.Abstract;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogApp.Shared.Data.Concrete.EntityFramework
@@ -79,6 +80,30 @@ namespace BlogApp.Shared.Data.Concrete.EntityFramework
             }
 
             return await queryable.FirstOrDefaultAsync();
+        }
+
+        public async Task<IList<TEntity>> SearchAsync(IList<Expression<Func<TEntity, bool>>> predicates, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            IQueryable<TEntity> query = _context.Set<TEntity>();
+
+            if(predicates.Any()){
+                var predicateChain = PredicateBuilder.New<TEntity>();
+                foreach (var predicate in predicates)
+                {
+                    //query = query.Where(predicate);
+                    predicateChain.Or(predicate);
+                }
+                query = query.Where(predicateChain);
+            }
+
+            if(includeProperties.Any()){
+                foreach (var includeProperty in includeProperties)
+                {
+                    query = query.Include(includeProperty);
+                }
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<TEntity> UpdateAsync(TEntity entity)

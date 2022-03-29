@@ -135,8 +135,13 @@ namespace BlogApp.Services.Concrete
 
         public async Task<IDataResult<CommentDto>> AddAsync(CommentAddDto commentAddDto)
         {
+            var article = await UnitOfWork.Articles.GetAsync(a => a.Id == commentAddDto.ArticleId);
+            if(article == null){
+                return new DataResult<CommentDto>(ResultStatus.Error, Messages.Article.NotFound(isPlural: false), null);
+            }
             var comment = Mapper.Map<Comment>(commentAddDto);
             var addedComment = await UnitOfWork.Comments.AddAsync(comment);
+            await UnitOfWork.Articles.UpdateAsync(article);
             await UnitOfWork.SaveAsync();
             return new DataResult<CommentDto>(ResultStatus.Success, Messages.Comment.Add(commentAddDto.Text), new CommentDto
             {
@@ -164,14 +169,18 @@ namespace BlogApp.Services.Concrete
 
         public async Task<IDataResult<CommentDto>> DeleteAsync(int commentId, string modifiedByName)
         {
-            var comment = await UnitOfWork.Comments.GetAsync(c => c.Id == commentId);
+            var comment = await UnitOfWork.Comments.GetAsync(c => c.Id == commentId, c => c.Article);
             if (comment != null)
             {
+                var article = comment.Article;
                 comment.IsActive = false;
                 comment.IsDeleted = true;
                 comment.ModifiedByName = modifiedByName;
                 comment.ModifiedDate = DateTime.Now;
+                article.CommentCount = await UnitOfWork.Comments.CountAsync(c => c.ArticleId == article.Id && !c.IsDeleted);
+                comment.Article = article;
                 var deletedComment = await UnitOfWork.Comments.UpdateAsync(comment);
+                await UnitOfWork.Articles.UpdateAsync(article);
                 await UnitOfWork.SaveAsync();
                 return new DataResult<CommentDto>(ResultStatus.Success, Messages.Comment.Delete(deletedComment.Text), new CommentDto
                 {
@@ -190,10 +199,13 @@ namespace BlogApp.Services.Concrete
 
         public async Task<IResult> HardDeleteAsync(int commentId)
         {
-            var comment = await UnitOfWork.Comments.GetAsync(c => c.Id == commentId);
+            var comment = await UnitOfWork.Comments.GetAsync(c => c.Id == commentId, c => c.Article);
             if (comment != null)
             {
+                var article = comment.Article;
                 await UnitOfWork.Comments.DeleteAsync(comment);
+                article.CommentCount = await UnitOfWork.Comments.CountAsync(c => c.ArticleId == article.Id && !c.IsDeleted);
+                await UnitOfWork.Articles.UpdateAsync(article);
                 await UnitOfWork.SaveAsync();
                 return new Result(ResultStatus.Success, Messages.Comment.HardDelete(comment.CreatedByName));
             }
@@ -224,9 +236,12 @@ namespace BlogApp.Services.Concrete
         {
             var comment = await UnitOfWork.Comments.GetAsync(c => c.Id == commentId, c => c.Article);
             if(comment != null){
+                var article = comment.Article;
                 comment.ModifiedByName = modifiedByName;
                 comment.ModifiedDate = DateTime.Now;
                 comment.IsActive = true;
+                article.CommentCount = await UnitOfWork.Comments.CountAsync(c => c.ArticleId == article.Id && c.IsActive && !c.IsDeleted);
+                comment.Article = article;
                 var updatedComment = await UnitOfWork.Comments.UpdateAsync(comment);
                 await UnitOfWork.SaveAsync();
                 return new DataResult<CommentDto>(ResultStatus.Success, Messages.Comment.Approve(comment.Text), new CommentDto()
@@ -246,13 +261,17 @@ namespace BlogApp.Services.Concrete
 
         public async Task<IDataResult<CommentDto>> UndoDeleteAsync(int commentId, string modifiedByName)
         {
-            var comment = await UnitOfWork.Comments.GetAsync(c => c.Id == commentId);
+            var comment = await UnitOfWork.Comments.GetAsync(c => c.Id == commentId, c => c.Article);
             if(comment != null){
+                var article = comment.Article;
                 comment.IsActive = true;
                 comment.IsDeleted = false;
                 comment.ModifiedDate = DateTime.Now;
                 comment.ModifiedByName = modifiedByName;
+                article.CommentCount = await UnitOfWork.Comments.CountAsync(c => c.ArticleId == article.Id && c.IsActive && !c.IsDeleted);
+                comment.Article = article;
                 var updatedComment = await UnitOfWork.Comments.UpdateAsync(comment);
+                await UnitOfWork.Articles.UpdateAsync(article);
                 await UnitOfWork.SaveAsync();
 
                 return new DataResult<CommentDto>(ResultStatus.Success, Messages.Comment.UndoDelete(comment.Text), new CommentDto()

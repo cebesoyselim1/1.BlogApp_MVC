@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="@ViewBag.Description">
+    <meta name="author" content="@ViewBag.Author">
+    <meta name="keywords" content="@ViewBag.Tags">
+
+    <title>@ViewBag.Title | BlogApp</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="~/BlogHome/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="~/BlogHome/css/blog-home.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="~/BlogHome/css/contact-page.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <partial name="_MainMenuPartial"/>
+
+    <!-- Page Content -->
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <!-- Blog Entries Column -->
+            @RenderBody()
+
+            <!-- SideBar Widgets Column -->
+
+        </div>
+        <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <!--
+    <footer class="py-5 bg-dark">
+        <div class="container">
+            <p class="m-0 text-center text-white">Copyright &copy; BlogApp 2022</p>
+        </div>
+    </footer>
+    Footer -->
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="~/BlogHome/vendor/jquery/jquery.min.js"></script>
+    <script src="~/BlogHome/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    @await RenderSectionAsync("Scripts",false);
+</body>
+
+</html>

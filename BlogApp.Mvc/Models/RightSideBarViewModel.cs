@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlogApp.Entities.Concrete;
-using BlogApp.Shared.Entities.Abstract;
 
-namespace BlogApp.Entities.Dtos.ArticleDtos
+namespace BlogApp.Mvc.Models
 {
-    public class ArticleListDto:DtoGetBase
+    public class RightSideBarViewModel
     {
+        public IList<Category> Categories { get; set; }
         public IList<Article> Articles { get; set; }
-        public int? CategoryId { get; set; }
     }
 }

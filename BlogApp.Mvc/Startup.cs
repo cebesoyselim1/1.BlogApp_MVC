@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using BlogApp.Entities.Concrete;
 using BlogApp.Mvc.AutoMapper.Profiles;
 using BlogApp.Mvc.Helpers.Abstract;
 using BlogApp.Mvc.Helpers.Concrete;
@@ -29,6 +30,8 @@ namespace BlogApp.Mvc
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AboutUsPageInfo>(_configuration.GetSection("AboutUsPageInfo"));
+            services.Configure<WebsiteInfo>(_configuration.GetSection("WebsiteInfo"));
             services.AddControllersWithViews().AddRazorRuntimeCompilation().AddJsonOptions(opt =>
             {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());

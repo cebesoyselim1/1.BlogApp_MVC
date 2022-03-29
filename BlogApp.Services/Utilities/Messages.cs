@@ -63,6 +63,9 @@ namespace BlogApp.Services.Utilities
             public static string Count(int articleCount){
                 return $"{articleCount} articles has successfully been brought.";
             }
+            public static string IncreaseViewCount(string articleName){
+                return $"View count of article has successfully been increased";
+            }
         }
 
         public static class Comment{
